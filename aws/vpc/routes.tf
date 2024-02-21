@@ -17,7 +17,7 @@ resource "aws_route_table_association" "firewall" {
   subnet_id      = aws_subnet.firewall[each.key].id
 }
 
-resource "aws_route_table" "public" {
+/**resource "aws_route_table" "public" {
   for_each = aws_subnet.public
   vpc_id   = aws_vpc.main[0].id
 
@@ -164,7 +164,7 @@ resource "aws_route_table_association" "tgw" {
   for_each       = aws_subnet.tgw
   route_table_id = aws_route_table.aws_tgw[each.key].id
   subnet_id      = aws_subnet.tgw[each.key].id
-}
+}**/
 
 resource "aws_route_table" "aws_igw_ingress" {
   vpc_id = aws_vpc.main[0].id
