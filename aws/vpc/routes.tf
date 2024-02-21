@@ -182,10 +182,11 @@ resource "aws_route_table_association" "aws_igw_ingress" {
     aws_internet_gateway.gateway
   ]
 }
-
+/**
 resource "aws_route" "aws_igw_pub_route" {
   count                  = length(aws_subnet.firewall)
   route_table_id         = aws_route_table.aws_igw_ingress.id
   destination_cidr_block = local.protected_pub_cidr_blocks[data.aws_availability_zones.this.names[count.index]]
   vpc_endpoint_id        = local.networkfirewall_endpoints[data.aws_availability_zones.this.names[count.index]]
 }
+**/
