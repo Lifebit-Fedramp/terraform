@@ -164,7 +164,7 @@ resource "aws_route_table_association" "tgw" {
   for_each       = aws_subnet.tgw
   route_table_id = aws_route_table.aws_tgw[each.key].id
   subnet_id      = aws_subnet.tgw[each.key].id
-}**/
+}
 
 resource "aws_route_table" "aws_igw_ingress" {
   vpc_id = aws_vpc.main[0].id
@@ -189,3 +189,4 @@ resource "aws_route" "aws_igw_pub_route" {
   destination_cidr_block = local.protected_pub_cidr_blocks[data.aws_availability_zones.this.names[count.index]]
   vpc_endpoint_id        = local.networkfirewall_endpoints[data.aws_availability_zones.this.names[count.index]]
 }
+**/
