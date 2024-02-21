@@ -17,7 +17,7 @@ resource "aws_route_table_association" "firewall" {
   subnet_id      = aws_subnet.firewall[each.key].id
 }
 
-/**resource "aws_route_table" "public" {
+resource "aws_route_table" "public" {
   for_each = aws_subnet.public
   vpc_id   = aws_vpc.main[0].id
 
@@ -189,4 +189,3 @@ resource "aws_route" "aws_igw_pub_route" {
   destination_cidr_block = local.protected_pub_cidr_blocks[data.aws_availability_zones.this.names[count.index]]
   vpc_endpoint_id        = local.networkfirewall_endpoints[data.aws_availability_zones.this.names[count.index]]
 }
-**/
