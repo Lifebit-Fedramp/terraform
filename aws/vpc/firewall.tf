@@ -203,9 +203,7 @@ resource "aws_networkfirewall_rule_group" "http_rulelist" {
         generated_rules_type = "ALLOWLIST"
         target_types         = ["HTTP_HOST"]
 
-        targets = [
-          for domain in var.http_firewall_egress_allowlist : domain.destination
-        ]
+        targets = var.http_firewall_egress_allowlist
       }
     }
   }

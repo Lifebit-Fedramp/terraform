@@ -213,7 +213,7 @@ variable "tls_firewall_egress_allowlist" {
   })))
 }
 
-variable "http_firewall_egress_allowlist" {
+variable "rules_source_list" {
   default     = []
   description = "domains allowed to egress out of the vpc"
   type = list(object({
@@ -225,6 +225,11 @@ variable "http_firewall_egress_allowlist" {
     approved_date = string
     description   = string
   }))
+}
+
+variable "http_firewall_egress_allowlist" {
+  default = ["*"]
+  description = "domains allowed to egress out of the vpc"
 }
 
 variable "enable_firewall" {
