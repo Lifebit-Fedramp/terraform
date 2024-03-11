@@ -3,6 +3,9 @@ variable "firewall_subnets" {
   default = []
 }
 variable "public_subnets" {}
+variable "public_dmz_subnets" {
+  default = []
+}
 variable "private_subnets" {}
 variable "private_ec2_subnets" {
   default = []
