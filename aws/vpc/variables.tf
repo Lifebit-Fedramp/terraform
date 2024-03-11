@@ -228,7 +228,7 @@ variable "rules_source_list" {
 }
 
 variable "http_firewall_egress_allowlist" {
-  default = ["*"]
+  default = ["google.com", ".google.com"]
   description = "domains allowed to egress out of the vpc"
 }
 
