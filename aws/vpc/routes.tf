@@ -18,7 +18,7 @@ resource "aws_route_table_association" "firewall" {
 }
 
 resource "aws_route_table" "public" {
-  for_each = toset(distinct([for subnet in aws_subnet.aws_subnet.public : subnet.availability_zone]))  
+  for_each = toset(distinct([for subnet in aws_subnet.public : subnet.availability_zone]))  
   vpc_id   = aws_vpc.main[0].id
 
   dynamic "route" {
