@@ -117,19 +117,19 @@ resource "aws_route_table" "app_private" {
   }
 }
 
-resource "aws_route_table" "aws_tgw" {
-  count  = var.attach_tgw_to_vpc ? 1 : 0
-  vpc_id = aws_vpc.main[0].id
+# resource "aws_route_table" "aws_tgw" {
+#   count  = var.attach_tgw_to_vpc ? 1 : 0
+#   vpc_id = aws_vpc.main[0].id
 
-  route {
-    cidr_block         = var.tgw_cidr
-    transit_gateway_id = var.tgw_id
-  }
+#   route {
+#     cidr_block         = var.tgw_cidr
+#     transit_gateway_id = var.tgw_id
+#   }
 
-  tags = {
-    Name = "${var.name}-AWS-TGW-RT"
-  }
-}
+#   tags = {
+#     Name = "${var.name}-AWS-TGW-RT"
+#   }
+# }
 
 resource "aws_route_table_association" "aws_private" {
   for_each       = aws_subnet.aws_private
@@ -143,11 +143,11 @@ resource "aws_route_table_association" "app_private" {
   subnet_id      = aws_subnet.app_private[each.key].id
 }
 
-resource "aws_route_table_association" "tgw" {
-  for_each       = var.attach_tgw_to_vpc ? aws_subnet.tgw : {}
-  route_table_id = aws_route_table.aws_tgw[0].id
-  subnet_id      = aws_subnet.tgw[each.key].id
-}
+# resource "aws_route_table_association" "tgw" {
+#   for_each       = var.attach_tgw_to_vpc ? aws_subnet.tgw : {}
+#   route_table_id = aws_route_table.aws_tgw[0].id
+#   subnet_id      = aws_subnet.tgw[each.key].id
+# }
 
 resource "aws_route_table" "aws_igw_ingress" {
   vpc_id = aws_vpc.main[0].id
