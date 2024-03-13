@@ -143,11 +143,11 @@ resource "aws_route_table_association" "app_private" {
   subnet_id      = aws_subnet.app_private[each.key].id
 }
 
-# resource "aws_route_table_association" "tgw" {
-#   for_each       = var.attach_tgw_to_vpc ? aws_subnet.tgw : {}
-#   route_table_id = aws_route_table.aws_tgw[0].id
-#   subnet_id      = aws_subnet.tgw[each.key].id
-# }
+resource "aws_route_table_association" "tgw" {
+  for_each       = var.attach_tgw_to_vpc ? aws_subnet.tgw : {}
+  route_table_id = aws_route_table.aws_tgw[0].id
+  subnet_id      = aws_subnet.tgw[each.key].id
+}
 
 resource "aws_route_table" "aws_igw_ingress" {
   vpc_id = aws_vpc.main[0].id
