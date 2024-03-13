@@ -118,27 +118,12 @@ resource "aws_route_table" "app_private" {
 }
 
 resource "aws_route_table" "aws_tgw" {
+  count  = var.attach_tgw_to_vpc ? 1 : 0
   vpc_id = aws_vpc.main[0].id
 
-  dynamic "route" {
-    for_each = [
-      for subnet in aws_subnet.public : subnet
-    ]
-    content {
-      cidr_block     = "0.0.0.0/0"
-      nat_gateway_id = aws_nat_gateway.ngw[route.value["cidr_block"]].id
-    }
-  }
-
-  dynamic "route" {
-    for_each = [
-      for subnet in aws_subnet.public : subnet
-      if var.tgw_id != "" && var.attach_tgw_to_vpc
-    ]
-    content {
-      cidr_block         = var.tgw_cidr
-      transit_gateway_id = var.tgw_id
-    }
+  route {
+    cidr_block         = var.tgw_cidr
+    transit_gateway_id = var.tgw_id
   }
 
   tags = {
@@ -159,8 +144,8 @@ resource "aws_route_table_association" "app_private" {
 }
 
 resource "aws_route_table_association" "tgw" {
-  for_each       = aws_subnet.tgw
-  route_table_id = aws_route_table.aws_tgw.id
+  for_each       = var.attach_tgw_to_vpc ? aws_subnet.tgw : {}
+  route_table_id = aws_route_table.aws_tgw[0].id
   subnet_id      = aws_subnet.tgw[each.key].id
 }
 
