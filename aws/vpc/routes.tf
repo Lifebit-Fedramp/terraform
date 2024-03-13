@@ -118,13 +118,11 @@ resource "aws_route_table" "app_private" {
 }
 
 resource "aws_route_table" "aws_tgw" {
-  for_each = aws_subnet.tgw
-  vpc_id   = aws_vpc.main[0].id
+  vpc_id = aws_vpc.main[0].id
 
   dynamic "route" {
     for_each = [
       for subnet in aws_subnet.public : subnet
-      if subnet.availability_zone == aws_subnet.tgw[each.key].availability_zone
     ]
     content {
       cidr_block     = "0.0.0.0/0"
@@ -135,7 +133,7 @@ resource "aws_route_table" "aws_tgw" {
   dynamic "route" {
     for_each = [
       for subnet in aws_subnet.public : subnet
-      if subnet.availability_zone == aws_subnet.tgw[each.key].availability_zone && var.tgw_id != "" && var.attach_tgw_to_vpc
+      if var.tgw_id != "" && var.attach_tgw_to_vpc
     ]
     content {
       cidr_block         = var.tgw_cidr
@@ -144,7 +142,7 @@ resource "aws_route_table" "aws_tgw" {
   }
 
   tags = {
-    Name = "${var.name}-AWS-TGW-AZ${substr(upper(aws_subnet.tgw[each.key].availability_zone), -1, 1)}-RT"
+    Name = "${var.name}-AWS-TGW-RT"
   }
 }
 
