@@ -160,7 +160,7 @@ resource "aws_route_table_association" "app_private" {
 
 resource "aws_route_table_association" "tgw" {
   for_each       = aws_subnet.tgw
-  route_table_id = aws_route_table.aws_tgw[each.key].id
+  route_table_id = aws_route_table.aws_tgw.id
   subnet_id      = aws_subnet.tgw[each.key].id
 }
 
