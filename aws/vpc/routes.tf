@@ -61,7 +61,7 @@ resource "aws_route_table" "aws_private" {
   dynamic "route" {
     for_each = [
       for subnet in aws_subnet.public : subnet
-      if subnet.availability_zone == each.key.availability_zone
+      if subnet.availability_zone == each.key
     ]
     content {
       cidr_block     = "0.0.0.0/0"
@@ -72,7 +72,7 @@ resource "aws_route_table" "aws_private" {
   dynamic "route" {
     for_each = [
       for subnet in aws_subnet.public : subnet
-      if subnet.availability_zone == each.key.availability_zone && var.tgw_id != "" && var.attach_tgw_to_vpc
+      if subnet.availability_zone == each.key && var.tgw_id != "" && var.attach_tgw_to_vpc
     ]
     content {
       cidr_block         = var.tgw_cidr
