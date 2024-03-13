@@ -61,7 +61,7 @@ resource "aws_route_table" "aws_private" {
   dynamic "route" {
     for_each = [
       for subnet in aws_subnet.public : subnet
-      if subnet.availability_zone == aws_subnet.aws_private[each.key].availability_zone
+      if subnet.availability_zone == each.key.availability_zone
     ]
     content {
       cidr_block     = "0.0.0.0/0"
@@ -72,7 +72,7 @@ resource "aws_route_table" "aws_private" {
   dynamic "route" {
     for_each = [
       for subnet in aws_subnet.public : subnet
-      if subnet.availability_zone == aws_subnet.aws_private[each.key].availability_zone && var.tgw_id != "" && var.attach_tgw_to_vpc
+      if subnet.availability_zone == each.key.availability_zone && var.tgw_id != "" && var.attach_tgw_to_vpc
     ]
     content {
       cidr_block         = var.tgw_cidr
@@ -81,7 +81,7 @@ resource "aws_route_table" "aws_private" {
   }
 
   tags = {
-    Name = "${var.name}-AWS-PRV-AZ${substr(upper(aws_subnet.aws_private[each.key].availability_zone), -1, 1)}-RT"
+    Name = "${var.name}-AWS-PRV-AZ${substr(upper(each.key), -1, 1)}-RT"
   }
 }
 
