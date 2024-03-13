@@ -55,9 +55,9 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_route_table" "aws_private" {
-  for_each = aws_subnet.aws_private
+  for_each = toset(distinct([for subnet in aws_subnet.aws_private : subnet.availability_zone]))
   vpc_id   = aws_vpc.main[0].id
-
+  
   dynamic "route" {
     for_each = [
       for subnet in aws_subnet.public : subnet
@@ -85,38 +85,6 @@ resource "aws_route_table" "aws_private" {
   }
 }
 
-
-resource "aws_route_table" "app_private" {
-  for_each = aws_subnet.app_private
-  vpc_id   = aws_vpc.main[0].id
-
-  dynamic "route" {
-    for_each = [
-      for subnet in aws_subnet.public : subnet
-      if subnet.availability_zone == aws_subnet.app_private[each.key].availability_zone
-    ]
-    content {
-      cidr_block     = "0.0.0.0/0"
-      nat_gateway_id = aws_nat_gateway.ngw[route.value["cidr_block"]].id
-    }
-  }
-
-  dynamic "route" {
-    for_each = [
-      for subnet in aws_subnet.public : subnet
-      if subnet.availability_zone == aws_subnet.app_private[each.key].availability_zone && var.tgw_id != "" && var.attach_tgw_to_vpc
-    ]
-    content {
-      cidr_block         = var.tgw_cidr
-      transit_gateway_id = var.tgw_id
-    }
-  }
-
-  tags = {
-    Name = "${var.name}-AWS-PRV-AZ${substr(upper(aws_subnet.app_private[each.key].availability_zone), -1, 1)}-RT"
-  }
-}
-
 resource "aws_route_table" "aws_tgw" {
   count  = var.attach_tgw_to_vpc ? 1 : 0
   vpc_id = aws_vpc.main[0].id
@@ -132,15 +100,9 @@ resource "aws_route_table" "aws_tgw" {
 }
 
 resource "aws_route_table_association" "aws_private" {
-  for_each       = aws_subnet.aws_private
-  route_table_id = aws_route_table.aws_private[each.key].id
-  subnet_id      = aws_subnet.aws_private[each.key].id
-}
-
-resource "aws_route_table_association" "app_private" {
-  for_each       = aws_subnet.app_private
-  route_table_id = aws_route_table.app_private[each.key].id
-  subnet_id      = aws_subnet.app_private[each.key].id
+  for_each       = merge(aws_subnet.aws_private, aws_subnet.app_private)
+  route_table_id = aws_route_table.aws_private[each.value.availability_zone].id
+  subnet_id      = each.value.id
 }
 
 resource "aws_route_table_association" "tgw" {
