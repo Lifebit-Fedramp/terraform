@@ -20,20 +20,20 @@ resource "aws_networkfirewall_firewall_policy" "policy" {
   name  = "${var.name}-FW-POLICY"
 
   firewall_policy {
-    dynamic "stateful_rule_group_reference" {
-      for_each = var.tls_firewall_egress_allowlist
-      content {
-        resource_arn = aws_networkfirewall_rule_group.rulelist[stateful_rule_group_reference.key].arn
-      }
-    }
+    # dynamic "stateful_rule_group_reference" {
+    #   for_each = var.tls_firewall_egress_allowlist
+    #   content {
+    #     resource_arn = aws_networkfirewall_rule_group.rulelist[stateful_rule_group_reference.key].arn
+    #   }
+    # }
 
-    stateful_rule_group_reference {
-      resource_arn = aws_networkfirewall_rule_group.aws_logging_rulelist[0].arn
-    }
+    # stateful_rule_group_reference {
+    #   resource_arn = aws_networkfirewall_rule_group.aws_logging_rulelist[0].arn
+    # }
 
-    stateful_rule_group_reference {
-      resource_arn = aws_networkfirewall_rule_group.http_rulelist[0].arn
-    }
+    # stateful_rule_group_reference {
+    #   resource_arn = aws_networkfirewall_rule_group.http_rulelist[0].arn
+    # }
 
     #stateful_rule_group_reference {
     #  resource_arn = aws_networkfirewall_rule_group.aws_regional_rulelist["<region>"].arn
