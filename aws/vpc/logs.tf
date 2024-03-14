@@ -1,3 +1,53 @@
+data "aws_iam_policy_document" "kms_vpc_flow_logs" {
+  statement {
+    sid = "vpc-flow-log-kms-policy-1"
+    principals {
+      type        = "AWS"
+      identifiers = ["${data.aws_caller_identity.current.account_id}"]
+    }
+
+    actions   = ["*"]
+    resources = ["*"]
+
+  }
+
+  statement {
+    sid = "vpc-flow-log-kms-policy-1"
+
+    actions = [
+      "kms:Encrypt*",
+      "kms:Decrypt*",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:Describe*"
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["logs.${data.aws_region.current.name}.amazonaws.com"]
+    }
+
+    resources = ["*"]
+
+    condition {
+      test     = "ArnEquals"
+      variable = "kms:EncryptionContext:aws:logs:arn"
+      values   = ["${aws_cloudwatch_log_group.vpc_flow_logs.arn}", "${aws_cloudwatch_log_group.network_firewall_flow_logs.arn}"]
+    }
+  }
+
+}
+
+resource "aws_kms_key" "vpc_flow_logs" {
+  description             = "KMS key to encrypt VPC flow logs"
+  deletion_window_in_days = 7
+  key_usage               = "ENCRYPT_DECRYPT"
+  policy                  = data.aws_iam_policy_document.kms_vpc_flow_logs.json
+  tags = {
+    Name = "${var.name}-vpc-flow-log-kms-key"
+  }
+}
+
 resource "aws_flow_log" "bucket" {
   log_destination      = var.flow_logs_bucket
   log_destination_type = "s3"
@@ -24,12 +74,14 @@ resource "aws_flow_log" "cloudwatch" {
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "${var.name}-VPC-LOGS"
   retention_in_days = 365
+  kms_key_id        = aws_kms_key.vpc_flow_logs.key_id
 }
 
 resource "aws_cloudwatch_log_group" "network_firewall_flow_logs" {
   count             = var.enable_firewall == true ? 1 : 0
   name              = "${var.name}-NETWORK-FIREWALL-LOGS"
   retention_in_days = 365
+  kms_key_id        = aws_kms_key.vpc_flow_logs.key_id
 }
 
 resource "aws_iam_role" "vpc_flow_logs" {
