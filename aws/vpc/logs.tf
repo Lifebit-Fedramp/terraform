@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "kms_vpc_flow_logs" {
     resources = ["*"]
 
     condition {
-      test     = "ArnEquals"
+      test     = "ForAnyValue:StringEquals"
       variable = "kms:EncryptionContext:aws:logs:arn"
       values   = var.enable_firewall == true ? ["${aws_cloudwatch_log_group.vpc_flow_logs.arn}", "${aws_cloudwatch_log_group.network_firewall_flow_logs[0].arn}"] : ["${aws_cloudwatch_log_group.vpc_flow_logs.arn}"]
     }
