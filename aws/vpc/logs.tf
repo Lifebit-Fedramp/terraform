@@ -41,11 +41,15 @@ data "aws_iam_policy_document" "kms_vpc_flow_logs" {
 resource "aws_kms_key" "vpc_flow_logs" {
   description             = "KMS key to encrypt VPC flow logs"
   deletion_window_in_days = 7
-  key_usage               = "ENCRYPT_DECRYPT"
-  policy                  = data.aws_iam_policy_document.kms_vpc_flow_logs.json
+  key_usage               = "ENCRYPT_DECRYPT"  
   tags = {
     Name = "${var.name}-vpc-flow-log-kms-key"
   }
+}
+
+resource "aws_kms_key_policy" "vpc_flow_logs_policy" {
+  key_id = aws_kms_key.vpc_flow_logs.key_id
+  policy = data.aws_iam_policy_document.kms_vpc_flow_logs.json
 }
 
 resource "aws_flow_log" "bucket" {
