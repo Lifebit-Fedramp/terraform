@@ -3,26 +3,49 @@ data "aws_iam_policy_document" "kms_vpc_flow_logs" {
     sid = "vpc-flow-log-kms-policy-0"
     principals {
       type        = "AWS"
-      identifiers = ["${data.aws_caller_identity.current.account_id}"]
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
     }
 
     actions   = ["*"]
     resources = ["*"]
 
   }
+
+  statement {
+    sid = "vpc-flow-log-kms-policy-1"
+
+    actions = [
+      "kms:Encrypt*",
+      "kms:Decrypt*",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:Describe*"
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["logs.${data.aws_region.current.name}.amazonaws.com"]
+    }
+
+    resources = ["*"]
+
+    condition {
+      test     = "ArnLike"
+      variable = "kms:EncryptionContext:aws:logs:arn"
+      values   = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"]
+    }
+  }
+
 }
 
 resource "aws_kms_key" "vpc_flow_logs" {
   description             = "KMS key to encrypt VPC flow logs"
   deletion_window_in_days = 7
-  key_usage               = "ENCRYPT_DECRYPT"  
+  key_usage               = "ENCRYPT_DECRYPT"
   tags = {
     Name = "${var.name}-vpc-flow-log-kms-key"
   }
-}
 
-resource "aws_kms_key_policy" "vpc_flow_logs_policy" {
-  key_id = aws_kms_key.vpc_flow_logs.key_id
   policy = data.aws_iam_policy_document.kms_vpc_flow_logs.json
 }
 
