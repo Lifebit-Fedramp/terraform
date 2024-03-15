@@ -3,7 +3,7 @@ data "aws_iam_policy_document" "kms_vpc_flow_logs" {
     sid = "vpc-flow-log-kms-policy-0"
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root", "${data.aws_caller_identity.current.account_id}"]
+      identifiers = ["${data.aws_caller_identity.current.account_id}"]
     }
 
     actions   = ["kms:*"]
