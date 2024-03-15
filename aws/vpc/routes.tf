@@ -131,8 +131,8 @@ resource "aws_route_table_association" "aws_igw_ingress" {
 }
 
 resource "aws_route" "aws_igw_pub_route" {
-  count                  = length(aws_subnet.firewall)
+  for_each               = merge(aws_subnet.public, aws_subnet.public_dmz)
   route_table_id         = aws_route_table.aws_igw_ingress.id
-  destination_cidr_block = local.protected_pub_cidr_blocks[data.aws_availability_zones.this.names[count.index]]
-  vpc_endpoint_id        = local.networkfirewall_endpoints[data.aws_availability_zones.this.names[count.index]]
+  destination_cidr_block = each.value.cidr_block
+  vpc_endpoint_id        = local.networkfirewall_endpoints[each.value.availability_zone]
 }
