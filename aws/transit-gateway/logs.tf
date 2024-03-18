@@ -49,12 +49,12 @@ resource "aws_kms_key" "tgw_flow_logs" {
   policy = data.aws_iam_policy_document.kms_tgw_flow_logs.json
 }
 
-resource "aws_flow_log" "cloudwatch" {
+resource "aws_flow_log" "tgw_cloudwatch" {
   iam_role_arn         = aws_iam_role.tgw_flow_logs.arn
   log_destination      = aws_cloudwatch_log_group.tgw_flow_logs.arn
   log_destination_type = "cloud-watch-logs"
   traffic_type         = "ALL"
-  vpc_id               = var.vpc_id
+  transit_gateway_id   = aws_ec2_transit_gateway.tgw.id
 
   tags = {
     Name = "${var.name}-tgw-cloudwatch-flow-logs"
