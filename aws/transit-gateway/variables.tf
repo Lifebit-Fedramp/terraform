@@ -14,3 +14,13 @@ variable "create_tgw_rt" {
   type        = bool
   default     = false
 }
+
+variable "flow_logs_bucket" {
+  description = "Bucket arn for flow logs"
+  type        = string
+}
+
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
+}
