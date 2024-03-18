@@ -49,17 +49,6 @@ resource "aws_kms_key" "tgw_flow_logs" {
   policy = data.aws_iam_policy_document.kms_tgw_flow_logs.json
 }
 
-resource "aws_flow_log" "bucket" {
-  log_destination      = var.flow_logs_bucket
-  log_destination_type = "s3"
-  traffic_type         = "ALL"
-  vpc_id               = var.vpc_id
-
-  tags = {
-    Name = "${var.name}-s3-flow-logs"
-  }
-}
-
 resource "aws_flow_log" "cloudwatch" {
   iam_role_arn         = aws_iam_role.tgw_flow_logs.arn
   log_destination      = aws_cloudwatch_log_group.tgw_flow_logs.arn
@@ -68,7 +57,7 @@ resource "aws_flow_log" "cloudwatch" {
   vpc_id               = var.vpc_id
 
   tags = {
-    Name = "${var.name}-cloudwatch-flow-logs"
+    Name = "${var.name}-tgw-cloudwatch-flow-logs"
   }
 }
 
