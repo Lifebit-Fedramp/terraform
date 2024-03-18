@@ -24,3 +24,8 @@ variable "vpc_id" {
   description = "VPC ID"
   type        = string
 }
+
+variable "aws_orgs_arn" {
+  description = "The AWS Orgs ARN principal to associate with the resource share."
+  type        = string
+}

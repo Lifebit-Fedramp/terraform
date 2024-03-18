@@ -1,6 +1,6 @@
 resource "aws_ec2_transit_gateway" "tgw" {
   description                    = var.name
-  auto_accept_shared_attachments = "enable"
+  auto_accept_shared_attachments = "disable"
 
   default_route_table_association = "disable"
   default_route_table_propagation = "disable"
@@ -23,14 +23,13 @@ resource "aws_ram_resource_share" "share_tgw" {
   allow_external_principals = true
 }
 
-resource "aws_ram_resource_association" "default" {
+resource "aws_ram_resource_association" "tgw_share" {
   resource_arn       = aws_ec2_transit_gateway.tgw.arn
   resource_share_arn = aws_ram_resource_share.share_tgw.id
 }
 
-resource "aws_ram_principal_association" "default" {
-  for_each           = toset(local.accounts_to_share)
-  principal          = each.value
+resource "aws_ram_principal_association" "tgw_share" {  
+  principal          = var.aws_orgs_arn
   resource_share_arn = aws_ram_resource_share.share_tgw.id
 }
 
