@@ -24,7 +24,7 @@ resource "aws_route_table" "public" {
   dynamic "route" {
     for_each = [
       for subnet in aws_subnet.firewall : subnet
-      if subnet.availability_zone == each.key && var.enable_firewall
+      if subnet.availability_zone == each.key && var.enable_firewall && var.enable_firewall
     ]
     content {
       cidr_block      = "0.0.0.0/0"
@@ -131,7 +131,7 @@ resource "aws_route_table_association" "aws_igw_ingress" {
 }
 
 resource "aws_route" "aws_igw_pub_route" {
-  for_each               = merge(aws_subnet.public, aws_subnet.public_dmz)
+  for_each               = var.enable_firewall ? merge(aws_subnet.public, aws_subnet.public_dmz) : {}
   route_table_id         = aws_route_table.aws_igw_ingress.id
   destination_cidr_block = each.value.cidr_block
   vpc_endpoint_id        = local.networkfirewall_endpoints[each.value.availability_zone]
