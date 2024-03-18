@@ -12,3 +12,13 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "tgw" {
     Name = "${var.name}-TGW-VPC-Attachment"
   }
 }
+
+
+resource "aws_ec2_transit_gateway_vpc_attachment_accepter" "tgw" {
+  count              = var.attach_tgw_to_vpc ? 1 : 0
+  transit_gateway_attachment_id = aws_ec2_transit_gateway_vpc_attachment.tgw.id
+
+  tags = {
+    Name = "${var.name}-TGW-VPC-Attachment-Accepter"
+  }
+}
