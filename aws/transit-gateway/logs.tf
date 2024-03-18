@@ -55,6 +55,7 @@ resource "aws_flow_log" "tgw_cloudwatch" {
   log_destination_type = "cloud-watch-logs"
   traffic_type         = "ALL"
   transit_gateway_id   = aws_ec2_transit_gateway.tgw.id
+  max_aggregation_interval = 60
 
   tags = {
     Name = "${var.name}-tgw-cloudwatch-flow-logs"
