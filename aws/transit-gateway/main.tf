@@ -42,6 +42,15 @@ resource "aws_ec2_transit_gateway_route_table" "vpc_routing_domain" {
   }
 }
 
+resource "aws_ec2_transit_gateway_vpc_attachment_accepter" "tgw" {
+  for_each = local.tgw_accepter_ids
+  transit_gateway_attachment_id = each.value
+
+  tags = {
+    Name = "${each.key}-TGW-VPC-Attachment-Accepter"
+  }
+}
+
 # resource "aws_ec2_transit_gateway_route_table_propagation" "vpc_routing_domain" {
 #   for_each = {
 #     for attachment in local.tgw_attachments : attachment => attachment
