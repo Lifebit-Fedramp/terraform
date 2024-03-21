@@ -46,6 +46,10 @@ resource "aws_route_table" "public" {
   tags = {
     Name = "${var.name}-AWS-PUB-AZ${substr(upper(each.key), -1, 1)}-RT"
   }
+
+  depends_on = [
+    aws_ec2_transit_gateway_vpc_attachment_accepter.tgw
+  ]
 }
 
 resource "aws_route_table_association" "public" {  
@@ -83,6 +87,10 @@ resource "aws_route_table" "aws_private" {
   tags = {
     Name = "${var.name}-AWS-PRV-AZ${substr(upper(each.key), -1, 1)}-RT"
   }
+
+  depends_on = [
+    aws_ec2_transit_gateway_vpc_attachment_accepter.tgw
+  ]
 }
 
 resource "aws_route_table" "aws_tgw" {  
@@ -99,6 +107,10 @@ resource "aws_route_table" "aws_tgw" {
   tags = {
     Name = "${var.name}-AWS-TGW-RT"
   }
+
+  depends_on = [
+    aws_ec2_transit_gateway_vpc_attachment_accepter.tgw
+  ]
 }
 
 resource "aws_route_table_association" "aws_private" {
