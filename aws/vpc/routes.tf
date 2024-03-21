@@ -35,7 +35,7 @@ resource "aws_route_table" "public" {
   dynamic "route" {
     for_each = [
       for subnet in aws_subnet.firewall : subnet
-      if subnet.availability_zone == each.key && var.tgw_id != "" && var.attach_tgw_to_vpc
+      if subnet.availability_zone == each.key && var.tgw_id != "" && var.attach_tgw_to_vpc && var.tgw_cidr != ""
     ]
     content {
       cidr_block         = var.tgw_cidr
@@ -72,7 +72,7 @@ resource "aws_route_table" "aws_private" {
   dynamic "route" {
     for_each = [
       for subnet in aws_subnet.public : subnet
-      if subnet.availability_zone == each.key && var.tgw_id != "" && var.attach_tgw_to_vpc
+      if subnet.availability_zone == each.key && var.tgw_id != "" && var.attach_tgw_to_vpc && var.tgw_cidr != ""
     ]
     content {
       cidr_block         = var.tgw_cidr
@@ -89,7 +89,7 @@ resource "aws_route_table" "aws_tgw" {
   vpc_id = aws_vpc.main[0].id
   
   dynamic "route" {
-    for_each = var.attach_tgw_to_vpc && var.tgw_id != "" ? [1] : []
+    for_each = var.attach_tgw_to_vpc && var.tgw_id != "" && var.tgw_cidr != "" && var.tgw_cidr != ""? [1] : []
     content {
       cidr_block         = var.tgw_cidr
       transit_gateway_id = var.tgw_id
