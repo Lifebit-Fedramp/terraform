@@ -29,7 +29,7 @@ variable "image_scanning" {
 
 locals {
   shared_account_id       = "<account>"
-  account_list_has_shared_services = contains(var.account_ids_with_pull_access, local.shared_services_account_id)
+  account_list_has_shared_services = contains(var.account_ids_with_pull_access, local.shared_account_id)
   account_ids_with_pull_access     = local.account_list_has_shared_services ? var.account_ids_with_pull_access : concat(var.account_ids_with_pull_access, [local.shared_services_account_id])
   account_arns_with_pull_access    = [for account_id in local.account_ids_with_pull_access : "arn:aws-us-gov:iam::${account_id}:root"]
   tag_immutability                 = var.immutable ? "IMMUTABLE" : "MUTABLE"
