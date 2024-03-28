@@ -15,6 +15,18 @@ variable "immutable" {
   description = "Whether to enable immutable tags for this repository"
 }
 
+variable "kms_key_arn" {
+  type        = string
+  default     = ""
+  description = "(Optional) ARN of the KMS key to use for encryption"
+}
+
+variable "image_scanning" {
+  type        = bool
+  default     = true
+  description = "Whether to enable image scanning"
+}
+
 locals {
   shared_account_id       = "<account>"
   account_list_has_shared_services = contains(var.account_ids_with_pull_access, local.shared_services_account_id)
@@ -27,12 +39,23 @@ resource "aws_ecr_repository" "this" {
   name                 = var.name
   image_tag_mutability = local.tag_immutability
 
-  encryption_configuration {
-    encryption_type = "AES256"
+  dynamic "encryption_configuration" {
+    for_each = var.kms_key_arn == "" ? [true]: []
+    content {
+      encryption_type = "AES256"
+    }
+  }
+
+  dynamic "encryption_configuration" {
+    for_each = var.kms_key_arn != "" ? [true]: []
+    content {
+      encryption_type = "KMS"
+      kms_key         = var.kms_key_arn
+    }
   }
 
   image_scanning_configuration {
-    scan_on_push = true
+    scan_on_push = var.image_scanning
   }
 }
 
