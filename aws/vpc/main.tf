@@ -9,5 +9,6 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_default_security_group" "default" {
-  vpc_id = aws_vpc.main.id
+  count  = var.create_vpn ? 1 : 0
+  vpc_id = aws_vpc.main[1].id
 }
