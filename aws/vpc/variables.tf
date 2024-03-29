@@ -235,3 +235,11 @@ variable "http_firewall_egress_allowlist" {
 variable "enable_firewall" {
   default = false
 }
+
+variable "enable_s3_endpoint" {
+  default = false
+}
+
+variable "enable_ecr_endpoints" {
+  default = false
+}

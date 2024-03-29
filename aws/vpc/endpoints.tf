@@ -1,4 +1,5 @@
 resource "aws_vpc_endpoint" "s3" {
+  count        = var.enable_s3_endpoint ? 1 : 0
   vpc_id       = aws_vpc.main[0].id
   service_name = "com.amazonaws.${data.aws_region.current.name}.s3"
 
@@ -46,6 +47,7 @@ resource "aws_vpc_endpoint" "ssm" {
 }
 
 resource "aws_vpc_endpoint" "ecr_dkr" {
+  count             = var.enable_ecr_endpoints ? 1 : 0
   vpc_id            = aws_vpc.main[0].id
   service_name      = "com.amazonaws.${data.aws_region.current.name}.ecr.dkr"
   vpc_endpoint_type = "Interface"
@@ -65,6 +67,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
 }
 
 resource "aws_vpc_endpoint" "ecr_api" {
+  count             = var.enable_ecr_endpoints ? 1 : 0
   vpc_id            = aws_vpc.main[0].id
   service_name      = "com.amazonaws.${data.aws_region.current.name}.ecr.api"
   vpc_endpoint_type = "Interface"

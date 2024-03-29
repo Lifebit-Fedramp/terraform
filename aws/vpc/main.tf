@@ -7,3 +7,7 @@ resource "aws_vpc" "main" {
     Name = "${var.name}-VPC"
   }
 }
+
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.main.id
+}
