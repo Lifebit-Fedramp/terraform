@@ -28,7 +28,7 @@ resource "aws_ram_resource_association" "tgw_share" {
   resource_share_arn = aws_ram_resource_share.share_tgw.id
 }
 
-resource "aws_ram_principal_association" "tgw_share" {  
+resource "aws_ram_principal_association" "tgw_share" {
   principal          = var.aws_orgs_arn
   resource_share_arn = aws_ram_resource_share.share_tgw.id
 }
@@ -43,7 +43,7 @@ resource "aws_ec2_transit_gateway_route_table" "vpc_routing_domain" {
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment_accepter" "tgw" {
-  for_each = local.tgw_accepter_ids
+  for_each                      = local.tgw_accepter_ids
   transit_gateway_attachment_id = each.value
 
   tags = {

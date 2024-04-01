@@ -20,11 +20,6 @@ variable "flow_logs_bucket" {
   type        = string
 }
 
-variable "vpc_id" {
-  description = "VPC ID"
-  type        = string
-}
-
 variable "aws_orgs_arn" {
   description = "The AWS Orgs ARN principal to associate with the resource share."
   type        = string
@@ -33,7 +28,7 @@ variable "aws_orgs_arn" {
 variable "accept_tgw_attachment" {
   description = "True false value to accept transit gateway attachments"
   type        = bool
-  default     = false  
+  default     = false
 }
 
 variable "vpc_attachment_id_map" {

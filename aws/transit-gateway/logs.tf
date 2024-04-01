@@ -49,12 +49,25 @@ resource "aws_kms_key" "tgw_flow_logs" {
   policy = data.aws_iam_policy_document.kms_tgw_flow_logs.json
 }
 
+resource "aws_flow_log" "bucket" {
+  log_destination          = var.flow_logs_bucket
+  log_destination_type     = "s3"
+  traffic_type             = "ALL"
+  transit_gateway_id       = aws_ec2_transit_gateway.tgw.id
+  max_aggregation_interval = 60
+
+  tags = {
+    Name = "${var.name}-s3-flow-logs"
+  }
+}
+
+
 resource "aws_flow_log" "tgw_cloudwatch" {
-  iam_role_arn         = aws_iam_role.tgw_flow_logs.arn
-  log_destination      = aws_cloudwatch_log_group.tgw_flow_logs.arn
-  log_destination_type = "cloud-watch-logs"
-  traffic_type         = "ALL"
-  transit_gateway_id   = aws_ec2_transit_gateway.tgw.id
+  iam_role_arn             = aws_iam_role.tgw_flow_logs.arn
+  log_destination          = aws_cloudwatch_log_group.tgw_flow_logs.arn
+  log_destination_type     = "cloud-watch-logs"
+  traffic_type             = "ALL"
+  transit_gateway_id       = aws_ec2_transit_gateway.tgw.id
   max_aggregation_interval = 60
 
   tags = {
