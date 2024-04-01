@@ -11,7 +11,7 @@ resource "aws_ec2_transit_gateway" "tgw" {
 }
 
 resource "aws_ec2_transit_gateway_route_table" "tgw" {
-  for_each           = { for gateway in aws_ec2_transit_gateway.tgw : gateway => gateway if var.create_tgw_rt }
+  count              = var.create_tgw_rt == true ? 1 : 0
   transit_gateway_id = aws_ec2_transit_gateway.tgw.id
   tags = {
     Name = "${var.name}-Route-Table"
@@ -34,7 +34,7 @@ resource "aws_ram_principal_association" "tgw_share" {
 }
 
 resource "aws_ec2_transit_gateway_route_table" "vpc_routing_domain" {
-  for_each           = { for gateway in aws_ec2_transit_gateway.tgw : gateway => gateway if var.create_tgw_rt }
+  count              = var.create_tgw_rt == true ? 1 : 0
   transit_gateway_id = aws_ec2_transit_gateway.tgw.id
 
   tags = {
