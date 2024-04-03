@@ -10,14 +10,6 @@ resource "aws_ec2_transit_gateway" "tgw" {
   }
 }
 
-resource "aws_ec2_transit_gateway_route_table" "tgw" {
-  count              = var.create_tgw_rt == true ? 1 : 0
-  transit_gateway_id = aws_ec2_transit_gateway.tgw.id
-  tags = {
-    Name = "${var.name}-Route-Table"
-  }
-}
-
 resource "aws_ram_resource_share" "share_tgw" {
   name                      = "${var.name}-share"
   allow_external_principals = true
@@ -33,15 +25,6 @@ resource "aws_ram_principal_association" "tgw_share" {
   resource_share_arn = aws_ram_resource_share.share_tgw.id
 }
 
-resource "aws_ec2_transit_gateway_route_table" "vpc_routing_domain" {
-  count              = var.create_tgw_rt == true ? 1 : 0
-  transit_gateway_id = aws_ec2_transit_gateway.tgw.id
-
-  tags = {
-    Name = "${var.name}-TGW-VPCs"
-  }
-}
-
 resource "aws_ec2_transit_gateway_vpc_attachment_accepter" "tgw" {
   for_each                      = local.tgw_accepter_ids
   transit_gateway_attachment_id = each.value
@@ -49,6 +32,20 @@ resource "aws_ec2_transit_gateway_vpc_attachment_accepter" "tgw" {
   tags = {
     Name = "${each.key}-TGW-VPC-Attachment-Accepter"
   }
+}
+
+resource "aws_ec2_transit_gateway_route_table" "attachment_rt" {
+  for_each           = var.vpc_attachment_id_map
+  transit_gateway_id = aws_ec2_transit_gateway.tgw.id
+  tags = {
+    Name = "${each.key}-Route-Table"
+  }
+}
+
+resource "aws_ec2_transit_gateway_route_table_association" "rt_association" {
+  for_each                       = var.vpc_attachment_id_map
+  transit_gateway_attachment_id  = each.value
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.attachment_rt[each.key].id
 }
 
 # resource "aws_ec2_transit_gateway_route_table_propagation" "vpc_routing_domain" {
