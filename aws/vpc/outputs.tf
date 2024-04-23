@@ -14,6 +14,14 @@ output "private_ec2_aws_subnet_ids" {
   value = [for subnet in aws_subnet.aws_private : subnet.id]
 }
 
+output "public_ec2_aws_subnet_ids" {
+  value = [for subnet in aws_subnet.public : subnet.id]
+}
+
+output "public_ec2_dmz_subnet_ids" {
+  value = [for subnet in aws_subnet.public_dmz : subnet.id]
+}
+
 output "default_security_group_id" {
   value = aws_vpc.main[0].default_security_group_id
 }
