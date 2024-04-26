@@ -1,0 +1,14 @@
+#!/bin/bash
+echo "ECS_CLUSTER=${cluster_name}" >> /etc/ecs/ecs.config
+echo "ECS_LOGLEVEL=debug" >> /etc/ecs/ecs.config
+echo "ECS_CONTAINER_INSTANCE_TAGS=${jsonencode(var.tags)}" >> /etc/ecs/ecs.config
+echo "ECS_ENABLE_TASK_IAM_ROLE=true" >> /etc/ecs/ecs.config
+
+## Docker image cleanup
+#https://github.com/aws/amazon-ecs-agent/blob/master/README.md#environment-variables
+#https://docs.aws.amazon.com/es_es/AmazonECS/latest/developerguide/automated_image_cleanup.html
+echo "ECS_ENGINE_TASK_CLEANUP_WAIT_DURATION=10m" >> /etc/ecs/ecs.config
+echo "ECS_DISABLE_IMAGE_CLEANUP=false" >> /etc/ecs/ecs.config
+echo "ECS_IMAGE_CLEANUP_INTERVAL=20m" >> /etc/ecs/ecs.config
+echo "ECS_IMAGE_MINIMUM_CLEANUP_AGE=20m" >> /etc/ecs/ecs.config
+echo "ECS_NUM_IMAGES_DELETE_PER_CYCLE=10" >> /etc/ecs/ecs.config
