@@ -103,6 +103,7 @@ module "autoscaling" {
   iam_role_policies = merge(var.iam_role_policies, {
     AmazonEC2ContainerServiceforEC2Role = "arn:aws-us-gov:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
     AmazonSSMManagedInstanceCore        = "arn:aws-us-gov:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    CloudWatchLogAccess                 = data.aws_iam_policy_document.logs_policy.json
   })
   iam_role_tags = var.iam_role_tags
 
