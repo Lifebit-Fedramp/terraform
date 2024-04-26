@@ -60,8 +60,9 @@ module "autoscaling" {
   ebs_optimized                   = var.ebs_optimized
   image_id                        = var.image_id
   instance_type                   = var.instance_type
-  user_data = base64encode(templatefile(var.instances_user_data_tpl_path, {
+  user_data = base64encode(templatefile("${path.module}/${var.instances_user_data_tpl_path}", {
     cluster_name = var.cluster_name
+    tags         = var.tags
   }))
   security_groups   = concat(var.security_groups, [module.autoscaling_sg.security_group_id])
   enable_monitoring = var.enable_monitoring

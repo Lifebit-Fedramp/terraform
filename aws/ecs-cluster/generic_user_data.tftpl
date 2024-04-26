@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "ECS_CLUSTER=${cluster_name}" >> /etc/ecs/ecs.config
 echo "ECS_LOGLEVEL=debug" >> /etc/ecs/ecs.config
-echo "ECS_CONTAINER_INSTANCE_TAGS=${jsonencode(var.tags)}" >> /etc/ecs/ecs.config
+echo "ECS_CONTAINER_INSTANCE_TAGS=${jsonencode(tags)}" >> /etc/ecs/ecs.config
 echo "ECS_ENABLE_TASK_IAM_ROLE=true" >> /etc/ecs/ecs.config
 
 ## Docker image cleanup
