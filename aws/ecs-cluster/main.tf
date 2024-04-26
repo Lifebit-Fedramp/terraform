@@ -5,7 +5,7 @@ module "autoscaling_sg" {
 
   name               = var.sg_name
   vpc_id             = var.vpc_id
-  use_name_prefix_sg = var.use_name_prefix_sg
+  use_name_prefix    = var.use_name_prefix_sg
   description        = format("Security group for %s ECS Instances", var.cluster_name)
 
   computed_ingress_with_source_security_group_id = [for source_sg in var.ingress_source_sgs :
