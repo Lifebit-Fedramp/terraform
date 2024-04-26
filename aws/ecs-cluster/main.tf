@@ -1,3 +1,10 @@
+resource "aws_iam_policy" "cw_access" {
+  name        = "${var.cluster_name}-cloudwatch-logs-policy"
+  description = "CloudWatch logs access for ECS"
+
+  policy = data.aws_iam_policy_document.logs_policy.json
+}
+
 module "autoscaling_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.1.2"
@@ -104,7 +111,7 @@ module "autoscaling" {
   iam_role_policies = merge(var.iam_role_policies, {
     AmazonEC2ContainerServiceforEC2Role = "arn:aws-us-gov:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
     AmazonSSMManagedInstanceCore        = "arn:aws-us-gov:iam::aws:policy/AmazonSSMManagedInstanceCore"
-    CloudWatchLogAccess                 = data.aws_iam_policy_document.logs_policy.json
+    CloudWatchLogAccess                 = aws_iam_policy.cw_access.arn
   })
   iam_role_tags = var.iam_role_tags
 
