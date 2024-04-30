@@ -44,7 +44,7 @@ locals {
     }
   ]
 
-  security_group_rules = [local.access_cidr_rules, local.access_sg_rules]
+  security_group_rules = compact([local.access_cidr_rules, local.access_sg_rules])
 }
 
 resource "aws_db_subnet_group" "db" {
