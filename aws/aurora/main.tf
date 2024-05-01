@@ -103,7 +103,7 @@ resource "aws_rds_cluster" "cluster" {
 
   dynamic "serverlessv2_scaling_configuration" {
     for_each = local.is_serverless ? local.serverlessv2_parameters : []
-    iterator = "config"
+    iterator = config
     content {
       max_capacity = config.value.max_capacity
       min_capacity = config.value.min_capacity
