@@ -1,7 +1,7 @@
 locals {
   is_mysql      = can(regex("mysql", var.db_family))
   is_postgres   = can(regex("postgresql", var.db_family))
-  is_serverless = can(regext("db.serverless", var.db_instance_class))
+  is_serverless = can(regex("db.serverless", var.db_instance_class))
 
   port_number = local.is_mysql ? 3306 : 5432
 
