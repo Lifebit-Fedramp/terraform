@@ -45,12 +45,12 @@ locals {
     }
   ]
 
-  serverlessv2_parameters = local.is_serverless ? [
+  serverlessv2_parameters = [
     {
       max_capacity = var.serverlessv2_max_capacity
       min_capacity = var.serverlessv2_min_capacity
     }
-  ] : []
+  ]
 
   security_group_rules_1 = []
   security_group_rules_2 = local.access_cidr_rules != null ? concat(local.security_group_rules_1, [local.access_cidr_rules]) : local.security_group_rules_1
@@ -102,7 +102,7 @@ resource "aws_rds_cluster" "cluster" {
   enabled_cloudwatch_logs_exports = local.is_mysql ? var.mysql_log_types : var.psql_log_types
 
   dynamic "serverlessv2_scaling_configuration" {
-    for_each = local.serverlessv2_parameters
+    for_each = local.is_serverless ? local.serverlessv2_parameters : []
     iterator = "config"
     content {
       max_capacity = config.value.max_capacity
