@@ -98,3 +98,15 @@ variable "tags" {
   description = "RDS tags"
   default     = {}
 }
+
+variable "serverlessv2_max_capacity" {
+  type        = number
+  description = "max capacity for serverlessv2"
+  default     = 1.0
+}
+
+variable "serverlessv2_min_capacity" {
+  type        = number
+  description = "min capacity for serverlessv2"
+  default     = 0.5
+}

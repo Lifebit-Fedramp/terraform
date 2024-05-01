@@ -1,6 +1,7 @@
 locals {
-  is_mysql    = can(regex("mysql", var.db_family))
-  is_postgres = can(regex("postgresql", var.db_family))
+  is_mysql      = can(regex("mysql", var.db_family))
+  is_postgres   = can(regex("postgresql", var.db_family))
+  is_serverless = can(regext("db.serverless", var.db_instance_class))
 
   port_number = local.is_mysql ? 3306 : 5432
 
@@ -41,6 +42,13 @@ locals {
     {
       name  = "rds.force_ssl"
       value = "1"
+    }
+  ]
+
+  serverlessv2_parameters = [
+    {
+      max_capacity = var.serverlessv2_max_capacity
+      min_capacity = var.serverlessv2_min_capacity
     }
   ]
 
@@ -92,6 +100,15 @@ resource "aws_rds_cluster" "cluster" {
   tags                = var.tags
 
   enabled_cloudwatch_logs_exports = local.is_mysql ? var.mysql_log_types : var.psql_log_types
+
+  dynamic "serverlessv2_scaling_configuration" {
+    for_each = local.is_serverless ? local.serverlessv2_parameters : []
+    iterator = "config"
+    content {
+      max_capacity = config.value.max_capacity
+      min_capacity = config.value.min_capacity
+    }
+  }
 
   # Prevent the creation of log groups until the cloudwatch resource has created them.
   # This prevents the logs from being created before aforementioned resource is able to.
