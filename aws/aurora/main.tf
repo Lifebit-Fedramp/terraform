@@ -61,8 +61,8 @@ resource "aws_rds_cluster_parameter_group" "default" {
   dynamic "parameter" {
     for_each = local.is_mysql ? local.mysql_parameters : local.postgres_parameters
     content {
-      name  = parameter.value["name"]
-      value = parameter.value["value"]
+      name  = parameter.value.name
+      value = parameter.value.value
     }
   }
 }
