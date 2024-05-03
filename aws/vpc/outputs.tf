@@ -14,11 +14,11 @@ output "private_ec2_aws_subnet_ids" {
   value = [for subnet in aws_subnet.aws_private : subnet.id]
 }
 
-output "public_ec2_aws_subnet_ids" {
+output "public_aws_subnet_ids" {
   value = [for subnet in aws_subnet.public : subnet.id]
 }
 
-output "public_ec2_dmz_subnet_ids" {
+output "public_dmz_subnet_ids" {
   value = [for subnet in aws_subnet.public_dmz : subnet.id]
 }
 
