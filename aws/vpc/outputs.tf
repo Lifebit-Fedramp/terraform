@@ -10,7 +10,7 @@ output "private_data_subnet_ids" {
   value = [for subnet in aws_subnet.aws_private : subnet.id]
 }
 
-output "private_ec2_aws_subnet_ids" {
+output "private_ec2_app_subnet_ids" {
   value = [for subnet in aws_subnet.app_private : subnet.id]
 }
 
