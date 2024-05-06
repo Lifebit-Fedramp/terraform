@@ -25,7 +25,7 @@ resource "aws_mq_broker" "broker" {
   }
 
   user {
-    username       = random_password.mq_user.result
+    username       = var.broker_user
     password       = random_password.mq.result
     groups         = ["admin"]
     console_access = true

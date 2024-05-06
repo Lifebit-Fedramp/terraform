@@ -12,9 +12,9 @@ variable "instance_type" {
   default = "mq.m5.large"
 }
 
-# variable "broker_user" {
-#   default = "example_user"
-# }
+variable "broker_user" {
+  default = "example_user"
+}
 
 variable "subnet_ids" {}
 
