@@ -126,7 +126,12 @@ module "ecs_cluster" {
   # Cluster
   cluster_name                     = var.cluster_name
   cluster_configuration            = var.cluster_configuration
-  cluster_settings                 = var.cluster_settings
+  cluster_settings                 = [
+    {
+      "name": "containerInsights",
+      "value": "enabled"
+    }
+  ]
   cluster_service_connect_defaults = var.cluster_service_connect_defaults
 
   # Cluster Cloudwatch log group

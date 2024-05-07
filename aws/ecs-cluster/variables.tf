@@ -35,12 +35,6 @@ variable "create_asg" {
   default     = true
 }
 
-#variable "ignore_desired_capacity_changes" {
-#  description = "Determines whether the `desired_capacity` value is ignored after initial apply. See README note for more details"
-#  type        = bool
-#  default     = false
-#}
-
 variable "asg_name" {
   description = "Name used across the resources created"
   type        = string
@@ -493,17 +487,6 @@ variable "cluster_configuration" {
   default     = {}
 }
 
-variable "cluster_settings" {
-  description = "List of configuration block(s) with cluster settings. For example, this can be used to enable CloudWatch Container Insights for a cluster"
-  type        = any
-  default = [
-    {
-      name  = "containerInsights"
-      value = "enabled"
-    }
-  ]
-}
-
 variable "cluster_service_connect_defaults" {
   description = "Configures a default Service Connect namespace"
   type        = map(string)
@@ -641,5 +624,4 @@ variable "ingress_source_sgs" {
   description = "List of source sgs to allow ingress from"
   type        = list(string)
   default     = []
-
 }
