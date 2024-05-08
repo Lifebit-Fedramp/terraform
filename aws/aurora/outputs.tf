@@ -22,3 +22,7 @@ output "db_port" {
 output "secrets_manager_secret_name" {
   value = aws_secretsmanager_secret.db-credentials.name
 }
+
+output "secrets_manager_secret_arn" {
+  value = aws_secretsmanager_secret.db-credentials.arn
+}
