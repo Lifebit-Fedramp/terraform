@@ -18,7 +18,7 @@ resource "aws_secretsmanager_secret_version" "secret_version" {
 }
 
 module "container_definition" {
-  source  = "terraform-aws-modules/ecs/aws//modules/" # fix
+  source  = "terraform-aws-modules/ecs/aws//modules/container-definition"
   version = "5.11.1"
 
   for_each = { for k, v in local.container_definitions : k => v }
