@@ -106,12 +106,6 @@ variable "default_instance_warmup" {
   default     = null
 }
 
-variable "protect_from_scale_in" {
-  description = "Allows setting instance protection. The autoscaling group will not select instances with this setting for termination during scale in events."
-  type        = bool
-  default     = false
-}
-
 variable "placement_group" {
   description = "The name of the placement group into which you'll launch your instances, if any"
   type        = string

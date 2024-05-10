@@ -48,7 +48,7 @@ module "autoscaling" {
   desired_capacity_type           = var.desired_capacity_type
   default_cooldown                = var.default_cooldown
   default_instance_warmup         = var.default_instance_warmup
-  protect_from_scale_in           = var.protect_from_scale_in
+  protect_from_scale_in           = true
   placement_group                 = var.placement_group
   health_check_type               = "EC2"
   health_check_grace_period       = var.health_check_grace_period
