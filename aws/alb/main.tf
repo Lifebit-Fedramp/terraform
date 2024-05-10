@@ -21,7 +21,7 @@ module "alb" {
     https = {
       port     = 443
       protocol = "HTTPS"
-      #      certificate_arn = var.certificate_arn
+      certificate_arn = var.certificate_arn
 
       fixed_response = {
         content_type = "text/plain"
