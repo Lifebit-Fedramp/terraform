@@ -1,3 +1,22 @@
+resource "aws_secretsmanager_secret" "service_secret" {
+  for_each = { for k, v in var.container_definitions : k => v if try(v.secrets_list, []) != [] }
+  name  = "${terraform.workspace}/${var.name}/${each.value.name}/ecs-configuration"
+
+  lifecycle {
+    ignore_changes = all
+  }
+}
+
+resource "aws_secretsmanager_secret_version" "secret_version" {
+  for_each = { for k, v in var.container_definitions : k => v if try(v.secrets_list, []) != [] }
+  secret_id     = aws_secretsmanager_secret.service_secret[each.key].id
+  secret_string = jsonencode(local.formatted_secrets)
+
+  lifecycle {
+    ignore_changes = all
+  }
+}
+
 resource "aws_lb_target_group" "service_tg" {
   count       = var.create ? 1 : 0
   name        = "${var.name}-tg"
@@ -119,7 +138,7 @@ module "ecs_service" {
   task_exec_iam_role_policies             = var.task_exec_iam_role_policies
   create_task_exec_policy                 = var.create_task_exec_policy
   task_exec_ssm_param_arns                = var.task_exec_ssm_param_arns
-  task_exec_secret_arns                   = var.task_exec_secret_arns
+  task_exec_secret_arns                   = [for k, v in aws_secretsmanager_secret.service_secret : v.arn]
   task_exec_iam_statements                = var.task_exec_iam_statements
 
   # Tasks - IAM Role

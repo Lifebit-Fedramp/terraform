@@ -10,7 +10,7 @@ locals {
   container_definitions = {
     for container_name, container_config in var.container_definitions :
     container_name => merge(container_config, {
-      secrets = try(container_config.secrets, [for k, v in lookup(local.formatted_secrets, container_name) : {
+      secrets = merge(try(container_config.secrets, {}), [for k, v in lookup(local.formatted_secrets, container_name) : {
         name      = k
         valueFrom = "${aws_secretsmanager_secret.service_secret[container_name].arn}:${k}::"
       }])

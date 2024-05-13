@@ -155,3 +155,12 @@ output "security_group_id" {
   description = "ID of the security group"
   value       = module.ecs_service.security_group_id
 }
+
+################################################################################
+# Secrets
+################################################################################
+
+output "service_secrets" {
+  description = "ARN of the secrets created for the services"
+  value       = { for k, v in aws_secretsmanager_secret.service_secret : k => v.arn }
+}
