@@ -2,7 +2,7 @@ locals {
 
   formatted_secrets = {
     for container_name, container_config in var.container_definitions :
-    container_name => try(container_config.secrets_list, []) ? {
+    container_name => try(container_config.secrets_list, []) != [] ? {
       for name in container_config.secrets_list : name => ""
     } : {}
   }
