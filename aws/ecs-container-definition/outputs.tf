@@ -27,5 +27,5 @@ output "cloudwatch_log_group_arn" {
 
 output "service_secret" {
   description = "ARN of the secret created for the service"
-  value       = var.create_secret ? aws_secretsmanager_secret.service_secret.arn : ""
+  value       = { for k, v in aws_secretsmanager_secret.service_secret : k => v.arn }
 }

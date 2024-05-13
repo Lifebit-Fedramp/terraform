@@ -10,7 +10,7 @@ resource "aws_secretsmanager_secret" "service_secret" {
 resource "aws_secretsmanager_secret_version" "secret_version" {
   for_each = { for k, v in var.container_definitions : k => v if try(v.create_secret, false) }
   secret_id     = aws_secretsmanager_secret.service_secret[each.key].id
-  secret_string = jsonencode(formatted_secrets)
+  secret_string = jsonencode(local.formatted_secrets)
 
   lifecycle {
     ignore_changes = all
