@@ -177,10 +177,12 @@ module "ecs_service" {
   security_group_rules           = var.security_group_rules
   security_group_tags            = var.security_group_tags
 
-  ordered_placement_strategy = {
-    type  = "binpack"
-    field = "cpu"
-  }
+  ordered_placement_strategy = [
+    {
+      type  = "binpack"
+      field = "cpu"
+    }
+  ]
 
   #  capacity_provider_strategy {
   #    capacity_provider = "${var.cluster_name}_capacity_provider"
