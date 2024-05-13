@@ -4,7 +4,7 @@
 
 output "container_definition" {
   description = "Container definition"
-  value       = module.container_definition.container_definition
+  value       = { for k, v in module.container_definition : k => v.container_definition }
 }
 
 ################################################################################
@@ -13,12 +13,12 @@ output "container_definition" {
 
 output "cloudwatch_log_group_name" {
   description = "Name of CloudWatch log group created"
-  value       = module.container_definition.cloudwatch_log_group_name
+  value       = { for k, v in module.container_definition : k => v.cloudwatch_log_group_name }
 }
 
 output "cloudwatch_log_group_arn" {
   description = "ARN of CloudWatch log group created"
-  value       = module.container_definition.cloudwatch_log_group_arn
+  value       = { for k, v in module.container_definition : k => v.cloudwatch_log_group_arn }
 }
 
 ################################################################################
