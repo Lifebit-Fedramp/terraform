@@ -24,7 +24,7 @@ resource "aws_lb_listener_rule" "service_rule" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.service_tg.arn
+    target_group_arn = aws_lb_target_group.service_tg[0].arn
   }
 
   condition {
@@ -56,7 +56,7 @@ module "ecs_service" {
   launch_type                        = "EC2"
   load_balancer                      = {
     service = {
-      target_group_arn = aws_lb_target_group.service_tg.arn
+      target_group_arn = aws_lb_target_group.service_tg[0].arn
       container_name   = var.container_name
       container_port   = var.app_port
     }

@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "service_secret" {
-  for_each = { for k, v in var.container_definitions : k => v if try(v.create_secret, false) }
+  for_each = { for k, v in var.container_definitions : k => v if try(v.secrets_list, []) }
   name  = "${terraform.workspace}/${var.service_name}/${each.value.name}/ecs-configuration"
 
   lifecycle {
@@ -8,7 +8,7 @@ resource "aws_secretsmanager_secret" "service_secret" {
 }
 
 resource "aws_secretsmanager_secret_version" "secret_version" {
-  for_each = { for k, v in var.container_definitions : k => v if try(v.create_secret, false) }
+  for_each = { for k, v in var.container_definitions : k => v if try(v.secrets_list, []) }
   secret_id     = aws_secretsmanager_secret.service_secret[each.key].id
   secret_string = jsonencode(local.formatted_secrets)
 
