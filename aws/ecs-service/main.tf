@@ -108,7 +108,7 @@ module "ecs_service" {
   # Task Definition
   create_task_definition                = var.create_task_definition
   task_definition_arn                   = var.task_definition_arn
-  container_definitions                 = var.container_definitions
+  container_definitions                 = local.container_definitions
   container_definition_defaults         = var.container_definition_defaults
   cpu                                   = var.cpu
   ephemeral_storage                     = var.ephemeral_storage
