@@ -328,12 +328,6 @@ variable "proxy_configuration" {
   default     = {}
 }
 
-variable "requires_compatibilities" {
-  description = "Set of launch types required by the task. The valid values are `EC2` and `FARGATE`"
-  type        = list(string)
-  default     = ["FARGATE"]
-}
-
 variable "runtime_platform" {
   description = "Configuration block for `runtime_platform` that containers in your task may use"
   type        = any

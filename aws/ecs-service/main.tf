@@ -120,7 +120,7 @@ module "ecs_service" {
   pid_mode                              = var.pid_mode # task not host?
   task_definition_placement_constraints = var.task_definition_placement_constraints
   proxy_configuration                   = var.proxy_configuration
-  requires_compatibilities              = var.requires_compatibilities
+  requires_compatibilities              = ["EC2"]
   runtime_platform                      = var.runtime_platform
   skip_destroy                          = var.skip_destroy
   volume                                = var.volume
