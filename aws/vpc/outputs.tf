@@ -22,6 +22,10 @@ output "public_dmz_subnet_ids" {
   value = [for subnet in aws_subnet.public_dmz : subnet.id]
 }
 
+output "nat_gateway_public_ips" {
+  value = [for gateway in aws_nat_gateway.ngw : gateway.public_ip]
+}
+
 output "default_security_group_id" {
   value = aws_vpc.main[0].default_security_group_id
 }
