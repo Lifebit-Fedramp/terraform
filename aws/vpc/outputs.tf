@@ -23,7 +23,7 @@ output "public_dmz_subnet_ids" {
 }
 
 output "nat_gateway_public_ips" {
-  value = [for gateway in aws_nat_gateway.ngw : gateway.id]
+  value = [for gateway in aws_nat_gateway.ngw : gateway.public_ip]
 }
 
 output "default_security_group_id" {
