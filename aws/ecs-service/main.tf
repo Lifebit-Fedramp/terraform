@@ -138,7 +138,7 @@ module "ecs_service" {
   task_exec_iam_role_policies             = var.task_exec_iam_role_policies
   create_task_exec_policy                 = var.create_task_exec_policy
   task_exec_ssm_param_arns                = var.task_exec_ssm_param_arns
-  task_exec_secret_arns                   = [for k, v in aws_secretsmanager_secret.service_secret : v.arn]
+  task_exec_secret_arns                   = concat(var.task_exec_secret_arns, [for k, v in aws_secretsmanager_secret.service_secret : v.arn])
   task_exec_iam_statements                = var.task_exec_iam_statements
 
   # Tasks - IAM Role
@@ -169,7 +169,7 @@ module "ecs_service" {
 
   # Security Group
 
-  # use ecs cluster sv?
+  # use ecs cluster sg?
   create_security_group          = var.create_security_group
   security_group_name            = var.security_group_name
   security_group_use_name_prefix = var.security_group_use_name_prefix
