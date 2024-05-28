@@ -29,7 +29,7 @@ resource "aws_iam_policy" "read_parameters" {
           "ssm:GetParameters"
         ],
         Resource = [
-          "arn:aws-us-gov:ssm:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:parameter/${var.path_prefix}/*"
+          "arn:aws-us-gov:ssm:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:parameter${var.path_prefix}/*"
         ]
       }
     ]
