@@ -677,9 +677,3 @@ variable "vpc_id" {
   type        = string
   default     = null
 }
-
-variable "container_name" {
-  description = "Name of the container to associate with the load balancer"
-  type        = string
-  default     = ""
-}
