@@ -2,7 +2,7 @@ resource "aws_ssm_parameter" "parameter" {
   for_each    = { for k, v in var.ssm_parameters : k => v }
   name        = "${var.path_prefix}/${each.key}"
   description = each.value.description
-  type        = each.value.value != "" ? "String" : "SecureString")
+  type        = each.value.value != "" ? "String" : "SecureString"
   value       = each.value.value
   key_id      = each.value.value != "" ? null : var.key_id
 
