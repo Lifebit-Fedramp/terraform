@@ -35,6 +35,13 @@ resource "aws_iam_policy" "read_parameters" {
         Resource = [
           "arn:aws-us-gov:ssm:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:parameter${var.path_prefix}/*"
         ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "kms:Decrypt"
+        ],
+        Resource = [var.key_id]
       }
     ]
   })
