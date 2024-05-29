@@ -1,6 +1,6 @@
 resource "aws_secretsmanager_secret" "service_secret" {
   for_each = { for k, v in var.container_definitions : k => v if try(v.secrets_list, []) != [] }
-  name  = "${terraform.workspace}/${var.name}/ecs-configuration"
+  name     = "${terraform.workspace}/${var.name}/ecs-configuration"
 
   lifecycle {
     ignore_changes = all
@@ -8,7 +8,7 @@ resource "aws_secretsmanager_secret" "service_secret" {
 }
 
 resource "aws_secretsmanager_secret_version" "secret_version" {
-  for_each = { for k, v in var.container_definitions : k => v if try(v.secrets_list, []) != [] }
+  for_each      = { for k, v in var.container_definitions : k => v if try(v.secrets_list, []) != [] }
   secret_id     = aws_secretsmanager_secret.service_secret[each.key].id
   secret_string = jsonencode(lookup(local.formatted_secrets, each.key, {}))
 
@@ -73,26 +73,26 @@ module "ecs_service" {
   force_new_deployment               = var.force_new_deployment
   health_check_grace_period_seconds  = var.health_check_grace_period_seconds
   launch_type                        = "EC2"
-  load_balancer                      = {
+  load_balancer = {
     service = {
       target_group_arn = aws_lb_target_group.service_tg[0].arn
       container_name   = var.name
       container_port   = var.app_port
     }
   }
-  name                               = var.name
-  security_group_ids                 = var.security_group_ids
-  subnet_ids                         = var.subnet_ids
-  placement_constraints              = var.placement_constraints
-  platform_version                   = var.platform_version
-  propagate_tags                     = var.propagate_tags
-  scheduling_strategy                = var.scheduling_strategy
-  service_connect_configuration      = var.service_connect_configuration
-  service_registries                 = var.service_registries
-  timeouts                           = var.timeouts
-  triggers                           = var.triggers
-  wait_for_steady_state              = var.wait_for_steady_state
-  service_tags                       = var.service_tags
+  name                          = var.name
+  security_group_ids            = var.security_group_ids
+  subnet_ids                    = var.subnet_ids
+  placement_constraints         = var.placement_constraints
+  platform_version              = var.platform_version
+  propagate_tags                = var.propagate_tags
+  scheduling_strategy           = var.scheduling_strategy
+  service_connect_configuration = var.service_connect_configuration
+  service_registries            = var.service_registries
+  timeouts                      = var.timeouts
+  triggers                      = var.triggers
+  wait_for_steady_state         = var.wait_for_steady_state
+  service_tags                  = var.service_tags
 
   # Service - IAM Role
   create_iam_role               = var.create_iam_role
@@ -117,7 +117,7 @@ module "ecs_service" {
   ipc_mode                              = var.ipc_mode
   memory                                = var.memory
   network_mode                          = var.network_mode
-  pid_mode                              = var.pid_mode # task not host?
+  pid_mode                              = var.pid_mode
   task_definition_placement_constraints = var.task_definition_placement_constraints
   proxy_configuration                   = var.proxy_configuration
   requires_compatibilities              = ["EC2"]
@@ -174,8 +174,24 @@ module "ecs_service" {
   security_group_name            = var.security_group_name
   security_group_use_name_prefix = var.security_group_use_name_prefix
   security_group_description     = var.security_group_description
-  security_group_rules           = var.security_group_rules
-  security_group_tags            = var.security_group_tags
+  security_group_rules = {
+    alb_ingress_443 = {
+      type                     = "ingress"
+      from_port                = 443
+      to_port                  = 443
+      protocol                 = "tcp"
+      description              = "Allow ingress from ALB"
+      source_security_group_id = var.alb_sg_id
+    }
+    egress_all = {
+      type        = "egress"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+  security_group_tags = var.security_group_tags
 
   ordered_placement_strategy = [
     {

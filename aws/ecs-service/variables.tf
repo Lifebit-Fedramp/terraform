@@ -677,3 +677,9 @@ variable "vpc_id" {
   type        = string
   default     = null
 }
+
+variable "alb_sg_id" {
+  description = "SG ID of ALB associated with service"
+  type        = string
+  default     = ""
+}
