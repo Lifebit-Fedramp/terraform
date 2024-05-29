@@ -7,6 +7,10 @@ resource "aws_ssm_parameter" "parameter" {
   key_id      = each.value.value != "" ? null : var.key_id
 
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [value]
+  }
 }
 
 resource "aws_iam_policy" "read_parameters" {
