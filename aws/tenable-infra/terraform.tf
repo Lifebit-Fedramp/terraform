@@ -2,8 +2,7 @@ terraform {
   required_providers {
     aws = {
       source                = "hashicorp/aws"
-      version               = ">= 5.0.0"
-      configuration_aliases = [aws.key_pair_src]
+      version               = ">= 5.0.0"      
     }
   }
 }
