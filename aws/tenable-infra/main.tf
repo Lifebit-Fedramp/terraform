@@ -15,10 +15,6 @@ locals {
   EOT
 }
 
-data "aws_partition" "this" {}
-
-data "aws_caller_identity" "this" {}
-
 module "kms" {
   source      = "terraform-aws-modules/kms/aws"
   version     = "3.0.0"
