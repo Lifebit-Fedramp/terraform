@@ -1,6 +1,6 @@
-data "aws_partition" "this" {}
+data "aws_partition" "current" {}
 
-data "aws_caller_identity" "this" {}
+data "aws_caller_identity" "current" {}
 
 locals {
   user_data = <<-EOT
