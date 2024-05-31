@@ -1,6 +1,6 @@
-data "aws_partition" "this" {}
+data "aws_partition" "current" {}
 
-data "aws_caller_identity" "this" {}
+data "aws_caller_identity" "current" {}
 
 locals {
   user_data = <<-EOT
@@ -14,10 +14,6 @@ locals {
     sudo /opt/nessus/sbin/nessuscli managed link --key=1ac657154e51f5630b1b6010fd1219adac4a8135a4194abf27cc6ade5aa20506 --cloud
   EOT
 }
-
-data "aws_partition" "this" {}
-
-data "aws_caller_identity" "this" {}
 
 module "kms" {
   source      = "terraform-aws-modules/kms/aws"
@@ -84,10 +80,10 @@ module "key_pair_secret" {
 
   secret_string = jsonencode({
     key_pair_id                   = module.key_pair.key_pair_id
-    key_pair_arn                  = module.key_pair.arn
-    key_pair_name                 = module.key_pair.key_name
-    key_pair_fingerprint          = module.key_pair.fingerprint
-    private_key_id                = module.key_pair.id
+    key_pair_arn                  = module.key_pair.key_pair_arn
+    key_pair_name                 = module.key_pair.key_pair_name
+    key_pair_fingerprint          = module.key_pair.key_pair_fingerprint
+    private_key_id                = module.key_pair.key_pair_id
     private_key_openssh           = trimspace(module.key_pair.private_key_openssh)
     private_key_pem               = trimspace(module.key_pair.private_key_pem)
     public_key_fingerprint_md5    = module.key_pair.public_key_fingerprint_md5
@@ -110,7 +106,7 @@ module "ec2_instance" {
   }
 
   instance_type               = var.ec2_instance_type
-  key_name                    = module.key_pair.key_name
+  key_name                    = module.key_pair.key_pair_name
   subnet_id                   = var.subnet_id
   user_data_base64            = base64encode(local.user_data)
   user_data_replace_on_change = true
