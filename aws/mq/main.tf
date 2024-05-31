@@ -60,6 +60,27 @@ resource "aws_security_group" "mq" {
     cidr_blocks = values(data.aws_subnet.mq_subnets).*.cidr_block
   }
 
+  ingress {
+    from_port   = 5671
+    to_port     = 5671
+    protocol    = "tcp"
+    cidr_blocks = values(data.aws_subnet.app_subnets).*.cidr_block
+  }
+
+  ingress {
+    from_port   = 15671
+    to_port     = 15671
+    protocol    = "tcp"
+    cidr_blocks = values(data.aws_subnet.app_subnets).*.cidr_block
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = values(data.aws_subnet.app_subnets).*.cidr_block
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

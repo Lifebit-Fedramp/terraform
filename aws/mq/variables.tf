@@ -18,6 +18,8 @@ variable "broker_user" {
 
 variable "subnet_ids" {}
 
+variable "app_subnet_ids" {}
+
 variable "vpc_id" {}
 
 variable "deployment_mode" {
