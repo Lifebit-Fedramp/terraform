@@ -183,6 +183,14 @@ module "ecs_service" {
       description              = "Allow ingress from ALB"
       source_security_group_id = var.alb_sg_id
     }
+    alb_ingress_app_port = {
+      type                     = "ingress"
+      from_port                = var.app_port
+      to_port                  = var.app_port
+      protocol                 = "tcp"
+      description              = "Allow ingress from ALB"
+      source_security_group_id = var.alb_sg_id
+    }
     egress_all = {
       type        = "egress"
       from_port   = 0
