@@ -68,14 +68,19 @@ module "key_pair_secret" {
     read = {
       sid = "AllowAccountRead"
       principals = [{
-        type        = "AWS"
-        identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+        type        = "*"
+        identifiers = ["*"]
       }]
       actions   = ["secretsmanager:GetSecretValue"]
       resources = ["*"]
-      condition = {
-        "StringEquals" = { "aws:PrincipalOrgID" = ["o-uucy43ih83"] }
-      }
+      conditions = [{
+        test     = "StringEquals"
+        variable = "aws:PrincipalOrgID"
+
+        values = [
+          "o-uucy43ih83"
+        ]
+      }]
     }
   }
 
