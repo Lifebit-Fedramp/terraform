@@ -73,6 +73,9 @@ module "key_pair_secret" {
       }]
       actions   = ["secretsmanager:GetSecretValue"]
       resources = ["*"]
+      condition = {
+        "StringEquals" = { "aws:PrincipalOrgID" = ["o-uucy43ih83"] }
+      }
     }
   }
 
