@@ -102,7 +102,7 @@ module "ec2_instance" {
   create_iam_instance_profile = true
   iam_role_description        = "IAM role for EC2 instance"
   iam_role_policies = {
-    AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    AmazonSSMManagedInstanceCore = "arn:aws-us-gov:iam::aws:policy/AmazonSSMManagedInstanceCore"
   }
 
   instance_type               = var.ec2_instance_type
