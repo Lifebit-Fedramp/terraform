@@ -7,9 +7,26 @@ locals {
     #!/bin/bash
     echo "Configuring Nessus Agent"
     NESSUS_KEY=$(aws ssm get-parameter --region us-gov-west-1 --name /NESSUS_KEY --with-decryption | jq -r '.Parameter.Value')
-    curl -H "X-Key: $NESSUS_KEY" 'https://sensor.cloud.tenable.com/install/agent?name=agent-name&groups=agent-group' >> install_nessus.sh
-    chmod +x install_nessus.sh
-    ./install_nessus.sh
+
+    echo "Downloading Nessus Agent installation package"
+    file=NessusAgent-amzn2.x86_64.rpm
+    response=$(curl -H "X-Key: $NESSUS_KEY" -s -w "%{http_code}" https://sensor.cloud.tenable.com/install/agent/installer/$file -o $file)
+
+    http_code=$(tail -n1 <<< "$response")
+    if [[ $http_code -ne 200 ]]
+    then
+      echo "Could not download the installation package for Nessus Agent."
+      exit 1
+    fi
+
+    echo "Installing and starting Nessus Agent"
+    rpm -ivh $file
+    systemctl start nesssusagent
+    systemctl enable nessusagent
+
+    echo "Linking Nessus Agent"
+    /opt/nessus_agent/sbin/nessuscli agent link --key=$NESSUS_KEY --cloud
+
   EOT
 }
 
