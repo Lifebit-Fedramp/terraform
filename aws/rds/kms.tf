@@ -37,8 +37,7 @@ data "aws_iam_policy_document" "rds_kms_cmk_policy" {
     effect = "Allow"
     principals {
       identifiers = [
-        "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:root",
-        "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:role/<role>"
+        "arn:aws-us-gov:iam::${data.aws_caller_identity.current.account_id}:root"
       ]
       type = "AWS"
     }
