@@ -34,9 +34,10 @@ module "db_instance" {
   storage_encrypted = true
   kms_key_id        = aws_kms_key.rds_kms_cmk.arn
 
-  username = var.username
-  password = random_password.db_master_pass.result
-  port     = var.port
+  username                    = var.username
+  password                    = random_password.db_master_pass.result
+  port                        = var.port
+  manage_master_user_password = false
 
   multi_az               = var.multi_az
   publicly_accessible    = var.publicly_accessible
