@@ -6,7 +6,7 @@ locals {
   user_data = <<-EOT
     #!/bin/bash
     echo "Configuring Nessus Agent"
-    $NESSUS_KEY=$(aws ssm get-parameter --region us-gov-west-1 --name /NESSUS_KEY --with-decryption | jq -r '.Parameter.Value')
+    NESSUS_KEY=$(aws ssm get-parameter --region us-gov-west-1 --name /NESSUS_KEY --with-decryption | jq -r '.Parameter.Value')
     curl -H 'X-Key: $NESSUS_KEY' 'https://sensor.cloud.tenable.com/install/agent?name=agent-name&groups=agent-group' | bash
   EOT
 }
