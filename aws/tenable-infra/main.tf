@@ -6,12 +6,8 @@ locals {
   user_data = <<-EOT
     #!/bin/bash
     echo "Configuring Nessus Agent"
-    sudo /opt/nessus_agent/sbin/nessuscli agent link --key=1ac657154e51f5630b1b6010fd1219adac4a8135a4194abf27cc6ade5aa20506 --cloud
-    sudo systemctl start nessusagent
-    sudo systemctl enable nessusagent
-
-    echo "Configuring Nessus Scanner"
-    sudo /opt/nessus/sbin/nessuscli managed link --key=1ac657154e51f5630b1b6010fd1219adac4a8135a4194abf27cc6ade5aa20506 --cloud
+    $NESSUS_KEY=$(aws ssm get-parameter --region us-gov-west-1 --name /NESSUS_KEY --with-decryption | jq -r '.Parameter.Value')
+    curl -H 'X-Key: $NESSUS_KEY' 'https://sensor.cloud.tenable.com/install/agent?name=agent-name&groups=agent-group' | bash
   EOT
 }
 
@@ -107,16 +103,12 @@ module "ec2_instance" {
   name                        = var.ec2_instance_name
   ami                         = var.ami_id
   create                      = var.create_key_pair
-  create_iam_instance_profile = true
-  iam_role_description        = "IAM role for EC2 instance"
-  iam_role_policies = {
-    AmazonSSMManagedInstanceCore = "arn:aws-us-gov:iam::aws:policy/AmazonSSMManagedInstanceCore"
-  }
+  iam_instance_profile        = aws_iam_instance_profile.tenable.name
 
   instance_type               = var.ec2_instance_type
   key_name                    = module.key_pair.key_pair_name
   subnet_id                   = var.subnet_id
   user_data_base64            = base64encode(local.user_data)
-  user_data_replace_on_change = true
+  user_data_replace_on_change = false
   vpc_security_group_ids      = var.vpc_security_group_ids
 }
