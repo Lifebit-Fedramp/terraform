@@ -10,14 +10,7 @@ locals {
   
     echo "Downloading Nessus Agent installation package"
     file=NessusAgent-amzn2.x86_64.rpm
-    response=$(curl -H "X-Key: $NESSUS_KEY" -s -w "%{http_code}" https://sensor.cloud.tenable.com/install/agent/installer/$file -o $file)
-
-    http_code=$(tail -n1 <<< "$response")
-    if [[ $http_code -ne 200 ]]
-    then
-      echo "Could not download the installation package for Nessus Agent."
-      exit 1
-    fi
+    curl -H "X-Key: $NESSUS_KEY" -s https://sensor.cloud.tenable.com/install/agent/installer/$file -o $file
 
     echo "Installing and starting Nessus Agent"
     rpm -ivh $file
