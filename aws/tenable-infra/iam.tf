@@ -47,7 +47,7 @@ data "aws_iam_policy_document" "param_store" {
 resource "aws_iam_role_policy" "tenable_param_store" {
   name   = "tenable-param-store"
   role   = aws_iam_role.tenable.id
-  policy = data.aws_iam_policy_document.jiradc_param_store.json
+  policy = data.aws_iam_policy_document.param_store.json
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_manage_instance_core" {
