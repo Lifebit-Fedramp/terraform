@@ -19,7 +19,7 @@ resource "aws_secretsmanager_secret_version" "db-credentials" {
       database = module.db_instance.db_instance_name
       engine   = var.engine
       host     = module.db_instance.db_instance_endpoint
-      password = module.db_instance.db_instance_password
+      password = random_password.db_master_pass.result
       port     = module.db_instance.db_instance_port
       username = module.db_instance.db_instance_username
     }

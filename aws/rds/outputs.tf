@@ -148,15 +148,6 @@ output "db_instance_cloudwatch_log_groups" {
   value       = module.db_instance.db_instance_cloudwatch_log_groups
 }
 
-################################################################################
-# DB Instance Role Association
-################################################################################
-
-output "db_instance_role_associations" {
-  description = "A map of DB Instance Identifiers and IAM Role ARNs separated by a comma"
-  value       = module.db_instance.db_instance_role_association
-}
-
 output "db_secret_arn" {
   description = "Secret ARN of DB Secrets Manager secret"
   value       = aws_secretsmanager_secret.db-credentials.arn
