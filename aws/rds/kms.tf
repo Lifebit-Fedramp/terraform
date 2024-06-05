@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "rds_key_policy" {
     principals {
       type = "Service"
       identifiers = [
-        "rds.us-gov-west-1.amazonaws.com"
+        "rds.amazonaws.com"
       ]
     }
   }
