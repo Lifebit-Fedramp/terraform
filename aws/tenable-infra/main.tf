@@ -14,7 +14,7 @@ locals {
 
     echo "Installing and starting Nessus Agent"
     rpm -ivh $file
-    systemctl start nesssusagent
+    systemctl start nessusagent
     systemctl enable nessusagent
 
     echo "Linking Nessus Agent"
