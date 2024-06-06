@@ -19,6 +19,11 @@ variable "ami_id" {
   type        = string
 }
 
+variable "ignore_ami_changes" {
+  description = "ignore ami changes"
+  type        = bool
+}
+
 variable "ec2_instance_type" {
   description = "EC2 Instance type"
   type        = string

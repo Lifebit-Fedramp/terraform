@@ -113,6 +113,7 @@ module "ec2_instance" {
   version                     = "5.6.1"
   name                        = var.ec2_instance_name
   ami                         = var.ami_id
+  ignore_ami_changes          = var.ignore_ami_changes
   create                      = var.create_key_pair
   iam_instance_profile        = aws_iam_instance_profile.tenable.name
 
