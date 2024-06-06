@@ -27,9 +27,3 @@ variable "identifier" {
   type        = string
   default     = ""
 }
-
-variable "environment" {
-  description = "Name of the environment"
-  type        = string
-  default     = ""
-}
