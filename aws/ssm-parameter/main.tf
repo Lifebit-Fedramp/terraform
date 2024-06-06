@@ -1,6 +1,6 @@
 resource "aws_ssm_parameter" "parameter" {
   for_each    = { for k, v in var.ssm_parameters : k => v }
-  name        = "${var.path_prefix}/${each.key}"
+  name        = "/${var.environment}/${var.path_prefix}/${each.key}"
   description = each.value.description
   type        = each.value.value != "" ? "String" : "SecureString"
   value       = each.value.value != "" ? each.value.value : "<placeholder>"
@@ -33,7 +33,8 @@ resource "aws_iam_policy" "read_parameters" {
           "ssm:GetParameters"
         ],
         Resource = [
-          "arn:aws-us-gov:ssm:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:parameter${var.path_prefix}/*"
+#          "arn:aws-us-gov:ssm:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:parameter${var.path_prefix}/*"
+          "arn:aws-us-gov:ssm:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:parameter${var.environment}/*"
         ]
       },
       {
