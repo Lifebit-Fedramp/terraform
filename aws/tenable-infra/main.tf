@@ -6,7 +6,11 @@ locals {
   user_data = <<-EOT
     #!/bin/bash
     echo "Configuring Nessus Agent"
-    NESSUS_KEY=$(aws ssm get-parameter --region us-gov-west-1 --name /NESSUS_KEY --with-decryption | jq -r '.Parameter.Value')
+    # get metadata values
+    TOKEN=$(curl -XPUT -s "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+    AVAILABILITY_ZONE=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone -H "X-aws-ec2-metadata-token: $TOKEN")
+    REGION=$(echo $AVAILABILITY_ZONE | sed 's/[a-z]$//')
+    NESSUS_KEY=$(aws ssm get-parameter --region $REGION --name /NESSUS_KEY --with-decryption | jq -r '.Parameter.Value')
   
     echo "Downloading Nessus Agent installation package"
     file=NessusAgent-amzn2.x86_64.rpm
@@ -21,11 +25,11 @@ locals {
     /opt/nessus_agent/sbin/nessuscli agent link --key=$NESSUS_KEY --cloud
 
     echo "Installing Nessus WAS"
-    AWS_ACCOUNT_NAME=$(aws ssm get-parameter --region us-gov-west-1 --name /TENABLE_WAS_NAME --with-decryption | jq -r '.Parameter.Value')
+    TENABLE_WAS_NAME=$(aws ssm get-parameter --region $REGION --name /TENABLE_WAS_NAME --with-decryption | jq -r '.Parameter.Value')
     aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin 026589913916.dkr.ecr-fips.$REGION.amazonaws.com
     docker pull 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/tenable-was:0.1.0
     docker tag 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/tenable-was:0.1.0 tenable-was:0.1.0
-    docker run -d -e WAS_SCANNER_NAME=$AWS_ACCOUNT_NAME -e WAS_LINKING_KEY=$NESSUS_KEY tenable-was::latest 
+    docker run -d -e WAS_SCANNER_NAME=$TENABLE_WAS_NAME -e WAS_LINKING_KEY=$NESSUS_KEY --network=host tenable-was:0.1.0 
   EOT
 }
 
