@@ -12,3 +12,15 @@ echo "ECS_DISABLE_IMAGE_CLEANUP=false" >> /etc/ecs/ecs.config
 echo "ECS_IMAGE_CLEANUP_INTERVAL=20m" >> /etc/ecs/ecs.config
 echo "ECS_IMAGE_MINIMUM_CLEANUP_AGE=20m" >> /etc/ecs/ecs.config
 echo "ECS_NUM_IMAGES_DELETE_PER_CYCLE=10" >> /etc/ecs/ecs.config
+
+# Configure linking key for agent
+sudo /opt/nessus_agent/sbin/nessuscli agent link --key=1ac657154e51f5630b1b6010fd1219adac4a8135a4194abf27cc6ade5aa20506 --cloud
+sudo systemctl start nessusagent
+sudo systemctl enable nessusagent
+
+echo "Installing & linking Nessus Scanner"
+
+curl -H 'X-Key: 1ac657154e51f5630b1b6010fd1219adac4a8135a4194abf27cc6ade5aa20506' 'https://sensor.cloud.tenable.com/install/scanner?name=scanner-name&groups=scanner-group' | bash
+
+# Configure linking key for scanner
+sudo /opt/nessus/sbin/nessuscli managed link --key=1ac657154e51f5630b1b6010fd1219adac4a8135a4194abf27cc6ade5aa20506 --cloud
