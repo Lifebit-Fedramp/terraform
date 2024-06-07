@@ -46,6 +46,11 @@ variable "tenable_key_param_store" {
 }
 
 variable "tenable_was_ecr_repo" {
-  description = "tenable-was ecr repo arn"
+  description = "tenable was ecr repo arn"
+  type        = string
+}
+
+variable "tenable_was_name_parm_store" {
+  description = "tenable was name param store"
   type        = string
 }
