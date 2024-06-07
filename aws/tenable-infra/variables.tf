@@ -44,3 +44,8 @@ variable "tenable_key_param_store" {
   description  = "arn for paramstore where tenable key can be retrieved"
   type         = string
 }
+
+variable "tenable_was_ecr_repo" {
+  description = "tenable-was ecr repo arn"
+  type        = string
+}
