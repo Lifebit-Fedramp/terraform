@@ -21,7 +21,7 @@ locals {
     /opt/nessus_agent/sbin/nessuscli agent link --key=$NESSUS_KEY --cloud
 
     echo "Installing Nessus WAS"
-    AWS_ACCOUNT_NAME=$(aws ssm get-parameter --region us-gov-west-1 --name /AWS_ACCOUNT_NAME --with-decryption | jq -r '.Parameter.Value')
+    AWS_ACCOUNT_NAME=$(aws ssm get-parameter --region us-gov-west-1 --name /TENABLE_WAS_NAME --with-decryption | jq -r '.Parameter.Value')
     aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin 026589913916.dkr.ecr-fips.$REGION.amazonaws.com
     docker pull 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/tenable-was:0.1.0
     docker tag 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/tenable-was:0.1.0 tenable-was:0.1.0

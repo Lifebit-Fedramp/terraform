@@ -35,7 +35,8 @@ data "aws_iam_policy_document" "param_store" {
     effect = "Allow"
 
     resources = [
-      "${var.tenable_key_param_store}"
+      "${var.tenable_key_param_store}",
+      "${var.tenable_was_name_parm_store}"
     ]
 
     actions = [
