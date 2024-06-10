@@ -28,7 +28,7 @@ locals {
 
     echo "Downloading Nessus Scanner installation package"
     scanner_file=Nessus-amzn2.x86_64.rpm
-    curl -H "X-Key: $NESSUS_KEY" -s https://sensor.cloud.tenable.com/install/scanner/installer/$file -o $scanner_file
+    curl -H "X-Key: $NESSUS_KEY" -s https://sensor.cloud.tenable.com/install/scanner/installer/$scanner_file -o $scanner_file
 
     echo "Installing Nessus Scanner"
     rpm -ivh $scanner_file
