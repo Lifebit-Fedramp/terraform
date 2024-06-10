@@ -156,5 +156,9 @@ module "ec2_instance" {
   user_data_replace_on_change = false
   vpc_security_group_ids      = var.vpc_security_group_ids
 
-  root_volume_size             = 60
+  root_block_device           = [
+    {
+      volume_size = 60
+    }
+  ] 
 }
