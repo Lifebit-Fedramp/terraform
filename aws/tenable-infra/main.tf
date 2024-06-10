@@ -36,13 +36,13 @@ locals {
     sed -i "s/NESSUS_KEY/$NESSUS_KEY/g" /opt/nessus/var/nessus/config.json
     sed -i "s/SCANNER_NAME/$TENABLE_SCANNER_NAME/g" /opt/nessus/var/nessus/config.json
 
-    echo "Link Nessus Scanner"
-    /opt/nessus/sbin/nessuscli managed link --key=$NESSUS_KEY --cloud --name=$TENABLE_SCANNER_NAME
-
     echo "Installing and starting Nessus Scanner Service"
     rpm -ivh $scanner_file
     systemctl start nessusd
     systemctl enable nessusd
+
+    echo "Link Nessus Scanner"
+    /opt/nessus/sbin/nessuscli managed link --key=$NESSUS_KEY --cloud --name=$TENABLE_SCANNER_NAME
 
     echo "Installing Nessus WAS"
     aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin 026589913916.dkr.ecr-fips.$REGION.amazonaws.com
