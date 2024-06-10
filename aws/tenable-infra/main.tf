@@ -30,11 +30,13 @@ locals {
     curl -H "X-Key: $NESSUS_KEY" -s https://sensor.cloud.tenable.com/install/scanner/installer/$file -o $scanner_file
 
     echo "Setup scanner config"
-    CONFIGURATION='{"link":{"host":"sensor.cloud.tenable.com","port":443,"key":"NESSUS_KEY","name":"SCANNER_NAME","groups":["SCANNER_GROUP"]}}'
+    CONFIGURATION='{"link":{"host":"sensor.cloud.tenable.com","port":443,"key":"NESSUS_KEY","name":"SCANNER_NAME","groups":["SharedVPC"]}}'
     echo $CONFIGURATION > /opt/nessus/var/nessus/config.json
     sed -i "s/NESSUS_KEY/$NESSUS_KEY/g" /opt/nessus/var/nessus/config.json
     sed -i "s/SCANNER_NAME/$TENABLE_WAS_NAME/g" /opt/nessus/var/nessus/config.json
-    sed -i "s/SCANNER_GROUP/$TENABLE_WAS_NAME/g" /opt/nessus/var/nessus/config.json
+
+    echo "Link Nessus Scanner"
+
 
     echo "Installing and starting Nessus Scanner Service"
     rpm -ivh $scanner_file
