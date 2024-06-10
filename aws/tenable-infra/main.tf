@@ -48,7 +48,7 @@ locals {
     aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin 026589913916.dkr.ecr-fips.$REGION.amazonaws.com
     docker pull 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/tenable-was:0.1.0
     docker tag 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/tenable-was:0.1.0 tenable-was:0.1.0
-    docker run -d -e WAS_SCANNER_NAME=$TENABLE_WAS_NAME -e WAS_LINKING_KEY=$NESSUS_KEY --network=host --restart --name='tenable-was' tenable-was:0.1.0 
+    docker run -d -e WAS_SCANNER_NAME=$TENABLE_WAS_NAME -e WAS_LINKING_KEY=$NESSUS_KEY --network=host --restart unless-stopped --name='tenable-was' tenable-was:0.1.0 
   EOT
 }
 
