@@ -12,6 +12,7 @@ locals {
     REGION=$(echo $AVAILABILITY_ZONE | sed 's/[a-z]$//')
     NESSUS_KEY=$(aws ssm get-parameter --region $REGION --name /NESSUS_KEY --with-decryption | jq -r '.Parameter.Value')
     TENABLE_WAS_NAME=$(aws ssm get-parameter --region $REGION --name /TENABLE_WAS_NAME --with-decryption | jq -r '.Parameter.Value')
+    TENABLE_SCANNER_NAME=$(aws ssm get-parameter --region $REGION --name /TENABLE_SCANNER_NAME --with-decryption | jq -r '.Parameter.Value')
   
     echo "Downloading Nessus Agent installation package"
     file=NessusAgent-amzn2.x86_64.rpm
@@ -36,7 +37,7 @@ locals {
     sed -i "s/SCANNER_NAME/$TENABLE_WAS_NAME/g" /opt/nessus/var/nessus/config.json
 
     echo "Link Nessus Scanner"
-
+    /opt/nessus/sbin/nessuscli managed link --key=$NESSUS_KEY --cloud --name=$TENABLE_SCANNER_NAME
 
     echo "Installing and starting Nessus Scanner Service"
     rpm -ivh $scanner_file
