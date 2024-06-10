@@ -34,7 +34,7 @@ locals {
     CONFIGURATION='{"link":{"host":"sensor.cloud.tenable.com","port":443,"key":"NESSUS_KEY","name":"SCANNER_NAME","groups":["SharedVPC"]}}'
     echo $CONFIGURATION > /opt/nessus/var/nessus/config.json
     sed -i "s/NESSUS_KEY/$NESSUS_KEY/g" /opt/nessus/var/nessus/config.json
-    sed -i "s/SCANNER_NAME/$TENABLE_WAS_NAME/g" /opt/nessus/var/nessus/config.json
+    sed -i "s/SCANNER_NAME/$TENABLE_SCANNER_NAME/g" /opt/nessus/var/nessus/config.json
 
     echo "Link Nessus Scanner"
     /opt/nessus/sbin/nessuscli managed link --key=$NESSUS_KEY --cloud --name=$TENABLE_SCANNER_NAME
