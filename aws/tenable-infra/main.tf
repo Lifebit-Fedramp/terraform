@@ -30,14 +30,16 @@ locals {
     scanner_file=Nessus-amzn2.x86_64.rpm
     curl -H "X-Key: $NESSUS_KEY" -s https://sensor.cloud.tenable.com/install/scanner/installer/$file -o $scanner_file
 
+    echo "Installing Nessus Scanner"
+    rpm -ivh $scanner_file
+
     echo "Setup scanner config"
     CONFIGURATION='{"link":{"host":"sensor.cloud.tenable.com","port":443,"key":"NESSUS_KEY","name":"SCANNER_NAME","groups":["SharedVPC"]}}'
     echo $CONFIGURATION > /opt/nessus/var/nessus/config.json
     sed -i "s/NESSUS_KEY/$NESSUS_KEY/g" /opt/nessus/var/nessus/config.json
     sed -i "s/SCANNER_NAME/$TENABLE_SCANNER_NAME/g" /opt/nessus/var/nessus/config.json
 
-    echo "Installing and starting Nessus Scanner Service"
-    rpm -ivh $scanner_file
+    echo "Starting Nessus Scanner Service"
     systemctl start nessusd
     systemctl enable nessusd
 
