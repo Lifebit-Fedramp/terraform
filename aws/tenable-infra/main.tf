@@ -155,4 +155,8 @@ module "ec2_instance" {
   user_data_base64            = base64encode(local.user_data)
   user_data_replace_on_change = false
   vpc_security_group_ids      = var.vpc_security_group_ids
+
+  root_block_device {
+    volume_size = 60
+  }
 }
