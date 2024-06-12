@@ -24,7 +24,7 @@ locals {
     systemctl enable nessusagent
 
     echo "Linking Nessus Agent"
-    /opt/nessus_agent/sbin/nessuscli agent link --key=$NESSUS_KEY --cloud
+    /opt/nessus_agent/sbin/nessuscli agent link --key=$NESSUS_KEY --cloud --groups='STIG - Linux'
 
     echo "Downloading Nessus Scanner installation package"
     scanner_file=Nessus-amzn2.x86_64.rpm
