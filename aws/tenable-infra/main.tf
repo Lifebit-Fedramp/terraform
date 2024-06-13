@@ -47,6 +47,9 @@ locals {
     /opt/nessus/sbin/nessuscli managed link --key=$NESSUS_KEY --cloud --name=$TENABLE_SCANNER_NAME
 
     echo "Installing Nessus WAS"
+    echo "installing docker"
+    yum install docker -y
+    echo "docker version: " && echo `/usr/bin/docker --version`
     aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin 026589913916.dkr.ecr-fips.$REGION.amazonaws.com
     docker pull 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/tenable-was:0.1.0
     docker tag 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/tenable-was:0.1.0 tenable-was:0.1.0
