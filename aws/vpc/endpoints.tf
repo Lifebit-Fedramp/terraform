@@ -20,7 +20,7 @@ resource "aws_vpc_endpoint" "kms" {
     aws_security_group.vpc_endpoints_https.id
   ] : [aws_security_group.vpc_endpoints_https.id]
 
-  subnet_ids = var.name == "<account_name>" ? [for subnet in aws_subnet.tgw : subnet.id] : [for subnet in aws_subnet.aws_private : subnet.id]
+  subnet_ids = var.name == "<account_name>" ? [for subnet in aws_subnet.tgw : subnet.id] : [for subnet in aws_subnet.app_private : subnet.id]
 
   tags = {
     Name = "${var.name}-kms${var.fips_enabled == true ? "-fips" : ""}-endpoint"
@@ -39,7 +39,7 @@ resource "aws_vpc_endpoint" "ssm" {
     aws_security_group.vpc_endpoints_https.id
   ] : [aws_security_group.vpc_endpoints_https.id]
 
-  subnet_ids = var.name == "<account_name>" ? [for subnet in aws_subnet.tgw : subnet.id] : [for subnet in aws_subnet.aws_private : subnet.id]
+  subnet_ids = var.name == "<account_name>" ? [for subnet in aws_subnet.tgw : subnet.id] : [for subnet in aws_subnet.app_private : subnet.id]
 
   tags = {
     Name = "${var.name}-ssm${var.fips_enabled == true ? "-fips" : ""}-endpoint"
@@ -59,7 +59,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
     aws_security_group.vpc_endpoints_https.id
   ] : [aws_security_group.vpc_endpoints_https.id]
 
-  subnet_ids = var.name == "<account_name>" ? [for subnet in aws_subnet.tgw : subnet.id] : [for subnet in aws_subnet.aws_private : subnet.id]
+  subnet_ids = var.name == "<account_name>" ? [for subnet in aws_subnet.tgw : subnet.id] : [for subnet in aws_subnet.app_private : subnet.id]
 
   tags = {
     Name = "${var.name}-ecr-endpoint-dkr"
@@ -79,7 +79,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
     aws_security_group.vpc_endpoints_https.id
   ] : [aws_security_group.vpc_endpoints_https.id]
 
-  subnet_ids = var.name == "<account_name>" ? [for subnet in aws_subnet.tgw : subnet.id] : [for subnet in aws_subnet.aws_private : subnet.id]
+  subnet_ids = var.name == "<account_name>" ? [for subnet in aws_subnet.tgw : subnet.id] : [for subnet in aws_subnet.app_private : subnet.id]
 
   tags = {
     Name = "${var.name}-ecr-endpoint-api"
@@ -98,7 +98,7 @@ resource "aws_vpc_endpoint" "ec2" {
     aws_security_group.vpc_endpoints_https.id
   ] : [aws_security_group.vpc_endpoints_https.id]
 
-  subnet_ids = var.name == "<account_name>" ? [for subnet in aws_subnet.tgw : subnet.id] : [for subnet in aws_subnet.aws_private : subnet.id]
+  subnet_ids = var.name == "<account_name>" ? [for subnet in aws_subnet.tgw : subnet.id] : [for subnet in aws_subnet.app_private : subnet.id]
 
   tags = {
     Name = "${var.name}-ec2-endpoint"
@@ -118,7 +118,7 @@ resource "aws_vpc_endpoint" "ec2messages" {
     aws_security_group.vpc_endpoints_https.id
   ] : [aws_security_group.vpc_endpoints_https.id]
 
-  subnet_ids = var.name == "<account_name>" ? [for subnet in aws_subnet.tgw : subnet.id] : [for subnet in aws_subnet.aws_private : subnet.id]
+  subnet_ids = var.name == "<account_name>" ? [for subnet in aws_subnet.tgw : subnet.id] : [for subnet in aws_subnet.app_private : subnet.id]
 
   tags = {
     Name = "${var.name}-ec2messages-endpoint"
