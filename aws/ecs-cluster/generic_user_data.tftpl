@@ -4,7 +4,7 @@ echo "installing docker"
 yum install docker -y
 echo "docker version: " && echo `/usr/bin/docker --version`
 
-curl -O https://s3.us-west-2.amazonaws.com/amazon-ecs-agent-us-west-2/amazon-ecs-init-latest.x86_64.rpm
+curl -O https://s3.us-gov-west-1.amazonaws.com/amazon-ecs-agent-us-gov-west-1/amazon-ecs-init-latest.x86_64.rpm
 yum localinstall -y amazon-ecs-init-latest.x86_64.rpm
 
 systemctl start ecs
