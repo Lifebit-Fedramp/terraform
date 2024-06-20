@@ -90,6 +90,8 @@ module "db_instance" {
   delete_automated_backups = var.delete_automated_backups
 
   tags = var.tags
+
+  depends_on = [aws_kms_key.rds_kms_cmk]
 }
 
 resource "aws_security_group" "rds" {
