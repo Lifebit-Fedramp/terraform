@@ -29,7 +29,8 @@ data "aws_iam_policy_document" "rds_key_policy" {
     principals {
       type = "Service"
       identifiers = [
-        "rds.amazonaws.com"
+        "rds.amazonaws.com",
+        "logs.${data.aws_region.current.id}.amazonaws.com"
       ]
     }
   }
