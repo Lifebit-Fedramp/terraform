@@ -14,5 +14,15 @@ echo "ECS_IMAGE_CLEANUP_INTERVAL=20m" >> /etc/ecs/ecs.config
 echo "ECS_IMAGE_MINIMUM_CLEANUP_AGE=20m" >> /etc/ecs/ecs.config
 echo "ECS_NUM_IMAGES_DELETE_PER_CYCLE=10" >> /etc/ecs/ecs.config
 
+# get metadata values
+echo "pulling docker images"
+TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+AVAILABILITY_ZONE=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone -H "X-aws-ec2-metadata-token: $TOKEN")
+REGION=$(echo $AVAILABILITY_ZONE | sed 's/[a-z]$//')
+aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin 026589913916.dkr.ecr-fips.$REGION.amazonaws.com
+docker pull 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/lifebit-platform/jupyter-notebook:v2.7.0
+docker pull 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/lifebit-platform/data-downloader:v1.9.3
+docker pull 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/lifebit-platform/spot-instance-preemption-monitor:v1.0.3
+
 echo "Installing tenable nessus agent"
-/tmp/install_tenable_nessus_agent.sh
+/install_tenable_nessus_agent.sh
