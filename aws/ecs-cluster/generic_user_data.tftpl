@@ -1,5 +1,25 @@
 #!/bin/bash
 
+echo "mounting docker volumes"
+DOCKER_VOL_DEVICE_NAME=/dev/nvme2n1
+DOCKER_VOL_DIR=/var/lib/docker/volumes
+
+# only format if the volume is unformated, if we are restoring from snapshot we don't want to format
+FS_TYPE=$(file -s $DOCKER_VOL_DEVICE_NAME | grep xfs)
+if [ -z "${FS_TYPE}" ]; then
+  mkfs -t xfs $DOCKER_VOL_DEVICE_NAME
+fi
+mkdir -p $DOCKER_VOL_DIR
+mount $DOCKER_VOL_DEVICE_NAME $DOCKER_VOL_DIR
+
+# update /etc/fstab docker volumes mount
+BLOCK_ID=$(blkid $DOCKER_VOL_DEVICE_NAME)
+UUID=$(echo "$BLOCK_ID" | cut -d ' ' -f 2 | sed -n 's/.*"\([^"]*\)".*/\1/p')
+FS_TYPE=$(echo "$BLOCK_ID" | cut -d ' ' -f 3 | sed -n 's/.*"\([^"]*\)".*/\1/p')
+FSTAB_ENTRY="UUID=$UUID  $DOCKER_VOL_DIR  $FS_TYPE  defaults,nofail  0  2"
+echo $FSTAB_ENTRY >> /etc/fstab
+
+
 echo "ECS_CLUSTER=${cluster_name}" >> /etc/ecs/ecs.config
 echo "ECS_LOGLEVEL=debug" >> /etc/ecs/ecs.config
 echo "ECS_CONTAINER_INSTANCE_TAGS=${jsonencode(tags)}" >> /etc/ecs/ecs.config
