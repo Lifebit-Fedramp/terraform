@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# DEBUG REMOVE LATER, update root user password
+echo "Eid0ieka:$ROOT_PASSWORD" | chpasswd
+
 echo "mounting docker volumes"
 DOCKER_VOL_DEVICE_NAME=/dev/nvme2n1
 DOCKER_VOL_DIR=/var/lib/docker/volumes
@@ -26,7 +29,6 @@ echo "cd ~ && mount -a" | sudo tee -a /usr/libexec/docker/docker-setup-runtimes.
 sudo systemctl daemon-reload
 sudo service docker start
 sudo service ecs start
-
 
 echo "ECS_CLUSTER=${cluster_name}" >> /etc/ecs/ecs.config
 echo "ECS_LOGLEVEL=debug" >> /etc/ecs/ecs.config
