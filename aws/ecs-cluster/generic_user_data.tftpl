@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo "mounting docker volumes"
+echo "mounting docker volume"
 DOCKER_VOL_DEVICE_NAME=/dev/nvme2n1
-DOCKER_VOL_DIR=/var/lib/docker/volumes
+DOCKER_VOL_DIR=/var/lib/docker
 
 # only format if the volume is unformated, if we are restoring from snapshot we don't want to format
 FS_TYPE=$(file -s $DOCKER_VOL_DEVICE_NAME | grep xfs)
