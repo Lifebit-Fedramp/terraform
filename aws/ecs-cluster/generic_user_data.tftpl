@@ -19,6 +19,14 @@ FS_TYPE=$(echo "$BLOCK_ID" | cut -d ' ' -f 3 | sed -n 's/.*"\([^"]*\)".*/\1/p')
 FSTAB_ENTRY="UUID=$UUID  $DOCKER_VOL_DIR  $FS_TYPE  defaults,nofail  0  2"
 echo $FSTAB_ENTRY >> /etc/fstab
 
+# Quick fix - when docker restarts, it umount above device from mount point (/var/lib/docker/volumes) which leads to use root volume.
+# So adding this line in file, helps to re-mount volume whenever restart happens. Issue link: https://github.com/moby/moby/issues/39267
+echo "cd ~ && mount -a" | sudo tee -a /usr/libexec/docker/docker-setup-runtimes.sh
+
+sudo systemctl daemon-reload
+sudo service docker start
+sudo service ecs start
+
 
 echo "ECS_CLUSTER=${cluster_name}" >> /etc/ecs/ecs.config
 echo "ECS_LOGLEVEL=debug" >> /etc/ecs/ecs.config
