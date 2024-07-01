@@ -1,3 +1,40 @@
+module "alb_sg" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "5.1.2"
+  create  = var.create
+
+  name               = "${var.name}-alb-sg"
+  vpc_id             = var.vpc_id
+  use_name_prefix    = var.security_group_use_name_prefix
+  description        = format("Security group for ALB %s", var.name)
+
+  ingress_with_cidr_blocks = var.ingress_cidrs != [] ? [
+    {
+      rule        = "http-80-tcp"
+      cidr_blocks = join(",", var.ingress_cidrs)
+    },
+    {
+      rule        = "https-443-tcp"
+      cidr_blocks = join(",", var.ingress_cidrs)
+    }
+  ] : [
+    {
+      rule        = "http-80-tcp"
+      cidr_blocks = "0.0.0.0/0"
+    },
+    {
+      rule        = "https-443-tcp"
+      cidr_blocks = "0.0.0.0/0"
+    }
+  ]
+
+  egress_rules = ["all-all"]
+
+  tags = merge(var.tags, {
+    Name = "${var.name}-alb-sg"
+  })
+}
+
 module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "9.9.0"
@@ -31,29 +68,8 @@ module "alb" {
     }
   }
 
-  security_group_name            = "${var.name}-alb-sg"
-  security_group_use_name_prefix = var.security_group_use_name_prefix
-  security_group_description     = format("Security group for ALB %s", var.name)
-  security_group_ingress_rules = var.private_ingress_sg_rules == {} ? {
-    all_https = {
-      from_port = 443
-      to_port   = 443
-      protocol  = "tcp"
-      cidr_ipv4 = "0.0.0.0/0"
-    }
-    all_http = {
-      from_port = 80
-      to_port   = 80
-      protocol  = "tcp"
-      cidr_ipv4 = "0.0.0.0/0"
-    }
-  } : var.private_ingress_sg_rules
-  security_group_egress_rules = {
-    all = {
-      ip_protocol = "-1"
-      cidr_ipv4   = "0.0.0.0/0"
-    }
-  }
+  create_security_group = false
+  security_groups       = [module.alb_sg.security_group_id]
 
   access_logs                                 = var.access_logs
   connection_logs                             = var.connection_logs

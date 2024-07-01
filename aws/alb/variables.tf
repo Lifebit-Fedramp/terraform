@@ -184,8 +184,8 @@ variable "certificate_arn" {
   default     = ""
 }
 
-variable "private_ingress_sg_rules" {
-  description = "Map of private ingress security group rules"
-  type        = map(any)
-  default     = {}
+variable "ingress_cidrs" {
+  description = "List of cidrs to allow ingress"
+  type        = list(string)
+  default     = []
 }
