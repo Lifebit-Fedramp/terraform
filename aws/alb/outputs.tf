@@ -56,12 +56,12 @@ output "target_groups" {
 
 output "security_group_arn" {
   description = "Amazon Resource Name (ARN) of the security group"
-  value       = module.alb.security_group_arn
+  value       = module.alb_sg.security_group_arn
 }
 
 output "security_group_id" {
   description = "ID of the security group"
-  value       = module.alb.security_group_id
+  value       = module.alb_sg.security_group_id
 }
 
 ################################################################################
