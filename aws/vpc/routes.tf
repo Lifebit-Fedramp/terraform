@@ -18,7 +18,7 @@ resource "aws_route_table_association" "firewall" {
 }
 
 resource "aws_route_table" "public" {
-  for_each = toset(distinct([for subnet in aws_subnet.public : subnet.availability_zone]))  
+  for_each = toset(distinct([for subnet in aws_subnet.public : subnet.availability_zone]))
   vpc_id   = aws_vpc.main[0].id
 
   dynamic "route" {
@@ -34,7 +34,7 @@ resource "aws_route_table" "public" {
 
   dynamic "route" {
     for_each = [
-      for subnet in aws_subnet.firewall : subnet
+      for subnet in aws_subnet.public : subnet
       if subnet.availability_zone == each.key && var.tgw_id != "" && var.attach_tgw_to_vpc && var.tgw_cidr != ""
     ]
     content {
@@ -43,12 +43,23 @@ resource "aws_route_table" "public" {
     }
   }
 
+  dynamic "route" {
+    for_each = [
+      for subnet in aws_subnet.public : subnet
+      if subnet.availability_zone == each.key && var.tgw_id == "" && !var.attach_tgw_to_vpc && var.tgw_cidr == ""
+    ]
+    content {
+      cidr_block         = "0.0.0.0/0"
+      transit_gateway_id = aws_internet_gateway.gateway.id
+    }
+  }
+
   tags = {
     Name = "${var.name}-AWS-PUB-AZ${substr(upper(each.key), -1, 1)}-RT"
   }
 }
 
-resource "aws_route_table_association" "public" {  
+resource "aws_route_table_association" "public" {
   for_each       = merge(aws_subnet.public_dmz, aws_subnet.public)
   route_table_id = aws_route_table.public[each.value.availability_zone].id
   subnet_id      = each.value.id
@@ -57,7 +68,7 @@ resource "aws_route_table_association" "public" {
 resource "aws_route_table" "aws_private" {
   for_each = toset(distinct([for subnet in aws_subnet.aws_private : subnet.availability_zone]))
   vpc_id   = aws_vpc.main[0].id
-  
+
   dynamic "route" {
     for_each = [
       for subnet in aws_subnet.public : subnet
@@ -85,11 +96,11 @@ resource "aws_route_table" "aws_private" {
   }
 }
 
-resource "aws_route_table" "aws_tgw" {  
+resource "aws_route_table" "aws_tgw" {
   vpc_id = aws_vpc.main[0].id
-  
+
   dynamic "route" {
-    for_each = var.attach_tgw_to_vpc && var.tgw_id != "" && var.tgw_cidr != "" && var.tgw_cidr != ""? [1] : []
+    for_each = var.attach_tgw_to_vpc && var.tgw_id != "" && var.tgw_cidr != "" && var.tgw_cidr != "" ? [1] : []
     content {
       cidr_block         = var.tgw_cidr
       transit_gateway_id = var.tgw_id

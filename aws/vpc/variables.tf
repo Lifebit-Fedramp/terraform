@@ -228,7 +228,7 @@ variable "rules_source_list" {
 }
 
 variable "http_firewall_egress_allowlist" {
-  default = ["google.com"]
+  default     = ["google.com"]
   description = "domains allowed to egress out of the vpc"
 }
 
@@ -237,6 +237,22 @@ variable "enable_firewall" {
 }
 
 variable "enable_s3_endpoint" {
+  default = false
+}
+
+variable "enable_sm_endpoint" {
+  default = false
+}
+
+variable "enable_cloudformation_endpoint" {
+  default = false
+}
+
+variable "enable_imagebuilder_endpoint" {
+  default = false
+}
+
+variable "enable_logs_endpoint" {
   default = false
 }
 
