@@ -34,12 +34,23 @@ resource "aws_route_table" "public" {
 
   dynamic "route" {
     for_each = [
-      for subnet in aws_subnet.firewall : subnet
+      for subnet in aws_subnet.public : subnet
       if subnet.availability_zone == each.key && var.tgw_id != "" && var.attach_tgw_to_vpc && var.tgw_cidr != ""
     ]
     content {
       cidr_block         = var.tgw_cidr
       transit_gateway_id = var.tgw_id
+    }
+  }
+
+  dynamic "route" {
+    for_each = [
+      for subnet in aws_subnet.public : subnet
+      if subnet.availability_zone == each.key && var.tgw_id == "" && !var.attach_tgw_to_vpc && var.tgw_cidr == ""
+    ]
+    content {
+      cidr_block         = "0.0.0.0/0"
+      transit_gateway_id = aws_internet_gateway.gateway.id
     }
   }
 
