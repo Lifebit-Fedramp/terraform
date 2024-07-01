@@ -45,23 +45,6 @@ resource "aws_vpc_endpoint" "cloudformation" {
   }
 }
 
-resource "aws_vpc_endpoint" "cloudformation" {
-  count             = var.enable_cloudformation_endpoint ? 1 : 0
-  vpc_id            = aws_vpc.main[0].id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.cloudformation"
-  vpc_endpoint_type = "Interface"
-
-  private_dns_enabled = var.endpoint_private_dns_endpoints_enabled
-
-  security_group_ids = [aws_security_group.vpc_endpoints_https.id]
-
-  subnet_ids = var.name == "<account_name>" ? [for subnet in aws_subnet.tgw : subnet.id] : [for subnet in aws_subnet.app_private : subnet.id]
-
-  tags = {
-    Name = "${var.name}-cloudformation${var.fips_enabled == true ? "-fips" : ""}-endpoint"
-  }
-}
-
 resource "aws_vpc_endpoint" "imagebuilder" {
   count             = var.enable_imagebuilder_endpoint ? 1 : 0
   vpc_id            = aws_vpc.main[0].id
