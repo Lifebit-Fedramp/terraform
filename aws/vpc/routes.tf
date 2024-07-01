@@ -49,8 +49,8 @@ resource "aws_route_table" "public" {
       if subnet.availability_zone == each.key && var.tgw_id == "" && !var.attach_tgw_to_vpc && var.tgw_cidr == ""
     ]
     content {
-      cidr_block         = "0.0.0.0/0"
-      transit_gateway_id = aws_internet_gateway.gateway.id
+      cidr_block = "0.0.0.0/0"
+      gateway_id = aws_internet_gateway.gateway.id
     }
   }
 
