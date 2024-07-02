@@ -3,10 +3,10 @@ module "alb_sg" {
   version = "5.1.2"
   create  = var.create
 
-  name               = "${var.name}-alb-sg"
-  vpc_id             = var.vpc_id
-  use_name_prefix    = var.security_group_use_name_prefix
-  description        = format("Security group for ALB %s", var.name)
+  name            = "${var.name}-alb-sg"
+  vpc_id          = var.vpc_id
+  use_name_prefix = var.security_group_use_name_prefix
+  description     = format("Security group for ALB %s", var.name)
 
   ingress_with_cidr_blocks = var.ingress_cidrs != [] ? [
     {
@@ -17,7 +17,7 @@ module "alb_sg" {
       rule        = "https-443-tcp"
       cidr_blocks = join(",", var.ingress_cidrs)
     }
-  ] : [
+    ] : [
     {
       rule        = "http-80-tcp"
       cidr_blocks = "0.0.0.0/0"
@@ -56,8 +56,8 @@ module "alb" {
       }
     }
     https = {
-      port     = 443
-      protocol = "HTTPS"
+      port            = 443
+      protocol        = "HTTPS"
       certificate_arn = var.certificate_arn
 
       fixed_response = {
@@ -75,7 +75,7 @@ module "alb" {
   connection_logs                             = var.connection_logs
   client_keep_alive                           = var.client_keep_alive
   customer_owned_ipv4_pool                    = var.customer_owned_ipv4_pool
-  desync_mitigation_mode                      = var.desync_mitigation_mode # defensive is default - do we want strictest? https://docs.aws.amazon.com/securityhub/latest/userguide/elb-controls.html#elb-12
+  desync_mitigation_mode                      = var.desync_mitigation_mode
   drop_invalid_header_fields                  = var.drop_invalid_header_fields
   enable_cross_zone_load_balancing            = var.enable_cross_zone_load_balancing
   enable_deletion_protection                  = var.enable_deletion_protection

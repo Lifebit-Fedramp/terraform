@@ -40,14 +40,14 @@ resource "aws_ecr_repository" "this" {
   image_tag_mutability = local.tag_immutability
 
   dynamic "encryption_configuration" {
-    for_each = var.kms_key_arn == "" ? [true]: []
+    for_each = var.kms_key_arn == "" ? [true] : []
     content {
       encryption_type = "AES256"
     }
   }
 
   dynamic "encryption_configuration" {
-    for_each = var.kms_key_arn != "" ? [true]: []
+    for_each = var.kms_key_arn != "" ? [true] : []
     content {
       encryption_type = "KMS"
       kms_key         = var.kms_key_arn
@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "this" {
 
 resource "aws_ecr_repository_policy" "this" {
   repository = aws_ecr_repository.this.name
-  policy = data.aws_iam_policy_document.this.json
+  policy     = data.aws_iam_policy_document.this.json
 }
 
 resource "aws_ecr_lifecycle_policy" "expire_old_images" {

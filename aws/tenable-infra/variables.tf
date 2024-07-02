@@ -41,8 +41,8 @@ variable "vpc_security_group_ids" {
 }
 
 variable "tenable_key_param_store" {
-  description  = "arn for paramstore where tenable key can be retrieved"
-  type         = string
+  description = "arn for paramstore where tenable key can be retrieved"
+  type        = string
 }
 
 variable "tenable_was_ecr_repo" {

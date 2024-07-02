@@ -1,28 +1,3 @@
-terraform {
-  required_providers {
-    rotating = {
-      source  = "Apollorion/rotating"
-      version = "1.0.0"
-    }
-  }
-}
-
-variable "name" {
-  type        = string
-  description = "The name of the user to create."
-}
-
-variable "rotation_days" {
-  type        = number
-  description = "The number of days before the iam creds are rotated."
-  default     = 30
-
-  validation {
-    condition     = var.rotation_days >= 2
-    error_message = "rotation_days must be greater than or equal to 2"
-  }
-}
-
 locals {
   BG = {
     blue  = aws_iam_access_key.blue
@@ -70,22 +45,3 @@ resource "aws_iam_access_key" "green" {
   }
 }
 
-output "active" {
-  value = local.BG[rotating_blue_green.this.active]
-}
-
-output "blue" {
-  value = aws_iam_access_key.blue
-}
-
-output "green" {
-  value = aws_iam_access_key.green
-}
-
-output "name" {
-  value = aws_iam_user.this.name
-}
-
-output "arn" {
-  value = aws_iam_user.this.arn
-}

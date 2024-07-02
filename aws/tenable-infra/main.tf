@@ -144,13 +144,13 @@ module "key_pair_secret" {
 }
 
 module "ec2_instance" {
-  source                      = "terraform-aws-modules/ec2-instance/aws"
-  version                     = "5.6.1"
-  name                        = var.ec2_instance_name
-  ami                         = var.ami_id
-  ignore_ami_changes          = var.ignore_ami_changes
-  create                      = var.create_key_pair
-  iam_instance_profile        = aws_iam_instance_profile.tenable.name
+  source               = "terraform-aws-modules/ec2-instance/aws"
+  version              = "5.6.1"
+  name                 = var.ec2_instance_name
+  ami                  = var.ami_id
+  ignore_ami_changes   = var.ignore_ami_changes
+  create               = var.create_key_pair
+  iam_instance_profile = aws_iam_instance_profile.tenable.name
 
   instance_type               = var.ec2_instance_type
   key_name                    = module.key_pair.key_pair_name
@@ -159,9 +159,9 @@ module "ec2_instance" {
   user_data_replace_on_change = false
   vpc_security_group_ids      = var.vpc_security_group_ids
 
-  root_block_device           = [
+  root_block_device = [
     {
       volume_size = 60
     }
-  ] 
+  ]
 }

@@ -54,7 +54,7 @@ locals {
 
   security_group_rules_1 = []
   security_group_rules_2 = local.access_cidr_rules != null ? concat(local.security_group_rules_1, [local.access_cidr_rules]) : local.security_group_rules_1
-  security_group_rules = local.access_sg_rules != null ? concat(local.security_group_rules_2, [local.access_sg_rules]) : local.security_group_rules_2
+  security_group_rules   = local.access_sg_rules != null ? concat(local.security_group_rules_2, [local.access_sg_rules]) : local.security_group_rules_2
 }
 
 resource "aws_db_subnet_group" "db" {

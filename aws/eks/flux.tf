@@ -8,8 +8,8 @@ resource "kubernetes_namespace" "flux_system" {
   metadata {
     name = local.flux_namespace
     labels = {
-      "managed-by" = "terraform"
-      "istio-injection"       = "disabled"
+      "managed-by"      = "terraform"
+      "istio-injection" = "disabled"
     }
   }
 
@@ -30,7 +30,7 @@ data "github_repository" "flux_sync" {
 }
 
 data "aws_secretsmanager_secret_version" "github_creds" {
-  provider = aws.sharedservices
+  provider  = aws.sharedservices
   secret_id = "github-credentials"
 }
 

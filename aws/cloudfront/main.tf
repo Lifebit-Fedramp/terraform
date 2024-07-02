@@ -1,5 +1,5 @@
 module "cdn" {
-  source = "terraform-aws-modules/cloudfront/aws"
+  source  = "terraform-aws-modules/cloudfront/aws"
   version = "3.2.0"
 
   aliases = var.aliases
