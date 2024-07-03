@@ -1,8 +1,3 @@
-variable "domain" {
-  description = "The domain to verify"
-  type        = string
-}
-
 data "aws_region" "this" {}
 
 resource "aws_ses_domain_identity" "this" {
@@ -135,12 +130,4 @@ resource "aws_secretsmanager_secret_version" "this" {
     identity          = var.domain,
     bounced_email_sns = aws_sns_topic.this.arn
   })
-}
-
-output "domain_verification_token" {
-  value = aws_ses_domain_identity.this.*.verification_token
-}
-
-output "dkim_tokens" {
-  value = aws_ses_domain_dkim.ses_domain_dkim.*.dkim_tokens
 }

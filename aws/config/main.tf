@@ -1,13 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 4.20.0"
-    }
-  }
-}
-
-
 resource "aws_config_config_rule" "access-keys-rotated" {
   name             = "access-keys-rotated"
   description      = "Checks if the active access keys are rotated within 90 days."

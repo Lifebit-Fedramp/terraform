@@ -27,7 +27,7 @@ variable "name" {
 }
 
 variable "create_vpn" {
-  description = "Turns VPC creatin on and off for accounts"
+  description = "Turns VPC creation on and off for accounts"
   type        = bool
   default     = true
 }

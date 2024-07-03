@@ -10,10 +10,10 @@ module "autoscaling_sg" {
   version = "5.1.2"
   create  = var.create_sg
 
-  name               = var.sg_name
-  vpc_id             = var.vpc_id
-  use_name_prefix    = var.use_name_prefix_sg
-  description        = format("Security group for %s ECS Instances", var.cluster_name)
+  name            = var.sg_name
+  vpc_id          = var.vpc_id
+  use_name_prefix = var.use_name_prefix_sg
+  description     = format("Security group for %s ECS Instances", var.cluster_name)
 
   computed_ingress_with_source_security_group_id = [for source_sg in var.ingress_source_sgs :
     {
@@ -124,12 +124,12 @@ module "ecs_cluster" {
   create  = var.create_ecs_cluster
 
   # Cluster
-  cluster_name                     = var.cluster_name
-  cluster_configuration            = var.cluster_configuration
-  cluster_settings                 = [
+  cluster_name          = var.cluster_name
+  cluster_configuration = var.cluster_configuration
+  cluster_settings = [
     {
-      "name": "containerInsights",
-      "value": "enabled"
+      "name" : "containerInsights",
+      "value" : "enabled"
     }
   ]
   cluster_service_connect_defaults = var.cluster_service_connect_defaults
