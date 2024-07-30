@@ -58,6 +58,7 @@ module "alb" {
     https = {
       port     = 443
       protocol = "HTTPS"
+      ssl_policy = "ELBSecurityPolicy-TLS13-1-2-FIPS-2023-04"
       certificate_arn = var.certificate_arn
 
       fixed_response = {
