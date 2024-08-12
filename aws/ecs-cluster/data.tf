@@ -7,10 +7,7 @@ data "aws_iam_policy_document" "logs_policy" {
     effect = "Allow"
 
     actions = [
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:PutLogEvents",
-      "logs:DescribeLogStreams"
+      "logs:PutRetentionPolicy"
     ]
 
     resources = [

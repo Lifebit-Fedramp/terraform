@@ -92,3 +92,29 @@ resource "aws_iam_role_policy_attachment" "ssm_manage_instance_core" {
   role       = aws_iam_role.tenable.name
   policy_arn = "arn:aws-us-gov:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_agent_server_policy" {
+  role       = aws_iam_role.tenable.name
+  policy_arn = "arn:aws-us-gov:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
+data "aws_iam_policy_document" "cloudwatch_log_retention" {
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "logs:PutRetentionPolicy"
+    ]
+
+    resources = [
+      "arn:aws-us-gov:logs:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:*"
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "cloudwatch_log_retention" {
+  name   = "tenable-cloudwatch-set-log-retention"
+  role   = aws_iam_role.tenable.id
+  policy = data.aws_iam_policy_document.cloudwatch_log_retention.json
+}
