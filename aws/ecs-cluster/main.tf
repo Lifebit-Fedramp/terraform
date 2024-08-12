@@ -112,6 +112,7 @@ module "autoscaling" {
     AmazonEC2ContainerServiceforEC2Role = "arn:aws-us-gov:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
     AmazonSSMManagedInstanceCore        = "arn:aws-us-gov:iam::aws:policy/AmazonSSMManagedInstanceCore"
     CloudWatchLogAccess                 = aws_iam_policy.cw_access.arn
+    CloudWatchAgentServerPolicy         = "arn:aws-us-gov:iam::aws:policy/CloudWatchAgentServerPolicy"
   })
   iam_role_tags = var.iam_role_tags
 
