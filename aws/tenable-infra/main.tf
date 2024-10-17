@@ -163,7 +163,7 @@ module "ec2_instance" {
 
   root_block_device           = [
     {
-      volume_size = 60
+      volume_size = var.root_block_device_volume_size
     }
   ] 
 }

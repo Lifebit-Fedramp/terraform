@@ -41,8 +41,8 @@ variable "vpc_security_group_ids" {
 }
 
 variable "tenable_key_param_store" {
-  description  = "arn for paramstore where tenable key can be retrieved"
-  type         = string
+  description = "arn for paramstore where tenable key can be retrieved"
+  type        = string
 }
 
 variable "tenable_was_ecr_repo" {
@@ -53,4 +53,10 @@ variable "tenable_was_ecr_repo" {
 variable "tenable_was_name_parm_store" {
   description = "tenable was name param store"
   type        = string
+}
+
+variable "root_block_device_volume_size" {
+  description = "Volume size for the root block device of the instance"
+  default     = 60
+  type        = number
 }
