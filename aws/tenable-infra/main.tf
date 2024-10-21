@@ -27,7 +27,7 @@ locals {
       
 
       echo "Linking Nessus Agent"
-      /opt/nessus_agent/sbin/nessuscli agent link --key=$NESSUS_KEY --cloud --groups='STIG - Linux'      
+      /opt/nessus_agent/sbin/nessuscli agent link --key=$NESSUS_KEY --cloud --groups=$TENABLE_AGENT_GROUP      
     EOT
 
     tenable_scanner_install = <<-EOT
@@ -47,7 +47,7 @@ locals {
       rpm -ivh $scanner_file
 
       # echo "Setup scanner config"
-      CONFIGURATION='{"link":{"host":"sensor.cloud.tenable.com","port":443,"key":"NESSUS_KEY","name":"SCANNER_NAME",}}'
+      CONFIGURATION='{"link":{"host":"sensor.cloud.tenable.com","port":443,"key":"NESSUS_KEY","name":"SCANNER_NAME"}}'
       echo $CONFIGURATION > /opt/nessus/var/nessus/config.json
       sed -i "s/NESSUS_KEY/$NESSUS_KEY/g" /opt/nessus/var/nessus/config.json
       sed -i "s/SCANNER_NAME/$TENABLE_SCANNER_NAME/g" /opt/nessus/var/nessus/config.json
