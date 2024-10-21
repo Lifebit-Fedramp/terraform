@@ -25,7 +25,7 @@ resource "aws_iam_role" "tenable" {
 }
 
 resource "aws_iam_instance_profile" "tenable" {
-  name = "tenable"
+  name = "${var.tenable_install_type}_tenable"
   role = aws_iam_role.tenable.name
 }
 

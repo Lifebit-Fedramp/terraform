@@ -85,7 +85,7 @@ locals {
 module "kms" {
   source      = "terraform-aws-modules/kms/aws"
   version     = "3.0.0"
-  aliases     = ["key_pair_kms_key"]
+  aliases     = ["${var.tenable_install_type}_key_pair_kms_key"]
   create      = var.create_key_pair
   description = "KMS key to encrypt secrets for Key Pair"
   key_statements = [
@@ -117,7 +117,7 @@ module "key_pair" {
   version               = "2.0.3"
   create                = var.create_key_pair
   create_private_key    = true
-  key_name              = var.key_name
+  key_name              = "${var.tenable_install_type}_${var.key_name}"
   private_key_algorithm = "ED25519"
 }
 
@@ -130,7 +130,7 @@ module "key_pair_secret" {
   create_policy       = true
   description         = "KMS key pair secret for ${var.key_name} key pair"
   kms_key_id          = module.kms.key_id
-  name                = "${var.key_name}-key-pair-secret"
+  name                = "${var.tenable_install_type}-${var.key_name}-key-pair-secret"
   policy_statements = {
     read = {
       sid = "AllowAccountRead"
