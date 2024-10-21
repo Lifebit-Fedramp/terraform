@@ -16,15 +16,15 @@ locals {
       NESSUS_KEY=$(aws ssm get-parameter --region $REGION --name /NESSUS_KEY --with-decryption | jq -r '.Parameter.Value')
       TENABLE_WAS_NAME=$(aws ssm get-parameter --region $REGION --name /TENABLE_WAS_NAME --with-decryption | jq -r '.Parameter.Value')
       TENABLE_SCANNER_NAME=$(aws ssm get-parameter --region $REGION --name /TENABLE_SCANNER_NAME --with-decryption | jq -r '.Parameter.Value')
-    
-      echo "Downloading Nessus Agent installation package"
-      file=NessusAgent-amzn2.x86_64.rpm
-      curl -H "X-Key: $NESSUS_KEY" -s https://sensor.cloud.tenable.com/install/agent/installer/$file -o $file
+      TENABLE_AGENT_NAME=$(curl http://169.254.169.254/latest/meta-data/hostname)
+      TENABLE_AGENT_GROUP="STIGLinux"
+
+      curl -H "X-Key: $NESSUS_KEY" "https://sensor.cloud.tenable.com/install/agent?name=$TENABLE_AGENT_NAME&groups=$TENABLE_AGENT_GROUP" | bash
 
       echo "Installing and starting Nessus Agent"
-      rpm -ivh $file
-      systemctl start nessusagent
       systemctl enable nessusagent
+      systemctl start nessusagent
+      
 
       echo "Linking Nessus Agent"
       /opt/nessus_agent/sbin/nessuscli agent link --key=$NESSUS_KEY --cloud --groups='STIG - Linux'      
