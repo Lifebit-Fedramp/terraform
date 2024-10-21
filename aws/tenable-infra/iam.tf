@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "tenable" {
 }
 
 resource "aws_iam_role" "tenable" {
-  name               = "tenable"
+  name               = "${var.tenable_install_type}-${var.ec2_instance_name}-tenable"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.tenable.json
   tags = {
