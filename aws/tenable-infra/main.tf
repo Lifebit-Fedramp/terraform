@@ -5,59 +5,81 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  user_data = <<-EOT
-    #!/bin/bash
-    echo "Configuring Nessus Agent"
-    # get metadata values
-    TOKEN=$(curl -XPUT -s "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-    AVAILABILITY_ZONE=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone -H "X-aws-ec2-metadata-token: $TOKEN")
-    REGION=$(echo $AVAILABILITY_ZONE | sed 's/[a-z]$//')
-    NESSUS_KEY=$(aws ssm get-parameter --region $REGION --name /NESSUS_KEY --with-decryption | jq -r '.Parameter.Value')
-    TENABLE_WAS_NAME=$(aws ssm get-parameter --region $REGION --name /TENABLE_WAS_NAME --with-decryption | jq -r '.Parameter.Value')
-    TENABLE_SCANNER_NAME=$(aws ssm get-parameter --region $REGION --name /TENABLE_SCANNER_NAME --with-decryption | jq -r '.Parameter.Value')
-  
-    echo "Downloading Nessus Agent installation package"
-    file=NessusAgent-amzn2.x86_64.rpm
-    curl -H "X-Key: $NESSUS_KEY" -s https://sensor.cloud.tenable.com/install/agent/installer/$file -o $file
+  user_data = {
+    tenable_agent_install = <<-EOT
+      #!/bin/bash
+      echo "Configuring Nessus Agent"
+      # get metadata values
+      TOKEN=$(curl -XPUT -s "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+      AVAILABILITY_ZONE=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone -H "X-aws-ec2-metadata-token: $TOKEN")
+      REGION=$(echo $AVAILABILITY_ZONE | sed 's/[a-z]$//')
+      NESSUS_KEY=$(aws ssm get-parameter --region $REGION --name /NESSUS_KEY --with-decryption | jq -r '.Parameter.Value')
+      TENABLE_WAS_NAME=$(aws ssm get-parameter --region $REGION --name /TENABLE_WAS_NAME --with-decryption | jq -r '.Parameter.Value')
+      TENABLE_SCANNER_NAME=$(aws ssm get-parameter --region $REGION --name /TENABLE_SCANNER_NAME --with-decryption | jq -r '.Parameter.Value')
+    
+      echo "Downloading Nessus Agent installation package"
+      file=NessusAgent-amzn2.x86_64.rpm
+      curl -H "X-Key: $NESSUS_KEY" -s https://sensor.cloud.tenable.com/install/agent/installer/$file -o $file
 
-    echo "Installing and starting Nessus Agent"
-    rpm -ivh $file
-    systemctl start nessusagent
-    systemctl enable nessusagent
+      echo "Installing and starting Nessus Agent"
+      rpm -ivh $file
+      systemctl start nessusagent
+      systemctl enable nessusagent
 
-    echo "Linking Nessus Agent"
-    /opt/nessus_agent/sbin/nessuscli agent link --key=$NESSUS_KEY --cloud --groups='STIG - Linux'
+      echo "Linking Nessus Agent"
+      /opt/nessus_agent/sbin/nessuscli agent link --key=$NESSUS_KEY --cloud --groups='STIG - Linux'      
+    EOT
 
-    # echo "Downloading Nessus Scanner installation package"
-    # scanner_file=Nessus-amzn2.x86_64.rpm
-    # curl -H "X-Key: $NESSUS_KEY" -s https://sensor.cloud.tenable.com/install/scanner/installer/$scanner_file -o $scanner_file
+    tenable_scanner_install = <<-EOT
+      #!/bin/bash
+      echo "Configuring Nessus Agent"
+      # get metadata values
+      TOKEN=$(curl -XPUT -s "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+      AVAILABILITY_ZONE=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone -H "X-aws-ec2-metadata-token: $TOKEN")
+      REGION=$(echo $AVAILABILITY_ZONE | sed 's/[a-z]$//')
+      NESSUS_KEY=$(aws ssm get-parameter --region $REGION --name /NESSUS_KEY --with-decryption | jq -r '.Parameter.Value')
+      TENABLE_WAS_NAME=$(aws ssm get-parameter --region $REGION --name /TENABLE_WAS_NAME --with-decryption | jq -r '.Parameter.Value')
+      TENABLE_SCANNER_NAME=$(aws ssm get-parameter --region $REGION --name /TENABLE_SCANNER_NAME --with-decryption | jq -r '.Parameter.Value')
+    
+      echo "Downloading Nessus Scanner installation package"
+      scanner_file=Nessus-amzn2.x86_64.rpm
+      curl -H "X-Key: $NESSUS_KEY" -s https://sensor.cloud.tenable.com/install/scanner/installer/$scanner_file -o $scanner_file
+      rpm -ivh $scanner_file
 
-    echo "Installing Nessus Scanner"
-    curl -H "X-Key:  $NESSUS_KEY" "https://sensor.cloud.tenable.com/install/scanner?name=$TENABLE_SCANNER_NAME" | bash
-    # rpm -ivh $scanner_file
+      # echo "Setup scanner config"
+      CONFIGURATION='{"link":{"host":"sensor.cloud.tenable.com","port":443,"key":"NESSUS_KEY","name":"SCANNER_NAME",}}'
+      echo $CONFIGURATION > /opt/nessus/var/nessus/config.json
+      sed -i "s/NESSUS_KEY/$NESSUS_KEY/g" /opt/nessus/var/nessus/config.json
+      sed -i "s/SCANNER_NAME/$TENABLE_SCANNER_NAME/g" /opt/nessus/var/nessus/config.json
 
-    # echo "Setup scanner config"
-    # CONFIGURATION='{"link":{"host":"sensor.cloud.tenable.com","port":443,"key":"NESSUS_KEY","name":"SCANNER_NAME","groups":["SharedVPC"]}}'
-    # echo $CONFIGURATION > /opt/nessus/var/nessus/config.json
-    # sed -i "s/NESSUS_KEY/$NESSUS_KEY/g" /opt/nessus/var/nessus/config.json
-    # sed -i "s/SCANNER_NAME/$TENABLE_SCANNER_NAME/g" /opt/nessus/var/nessus/config.json
+      echo "Link Nessus Scanner"
+      /opt/nessus/sbin/nessuscli managed link --key=$NESSUS_KEY --cloud --name=$TENABLE_SCANNER_NAME
 
-    echo "Starting Nessus Scanner Service"
-    systemctl start nessusd
-    systemctl enable nessusd
+      echo "Starting Nessus Scanner Service"
+      systemctl enable nessusd
+      systemctl start nessusd
+    EOT
 
-    echo "Link Nessus Scanner"
-    /opt/nessus/sbin/nessuscli managed link --key=$NESSUS_KEY --cloud --name=$TENABLE_SCANNER_NAME
-
-    echo "Installing Nessus WAS"
-    echo "installing docker"
-    yum install docker -y
-    echo "docker version: " && echo `/usr/bin/docker --version`
-    aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin 026589913916.dkr.ecr-fips.$REGION.amazonaws.com
-    docker pull 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/tenable-was:0.1.0
-    docker tag 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/tenable-was:0.1.0 tenable-was:0.1.0
-    docker run -d -e WAS_SCANNER_NAME=$TENABLE_WAS_NAME -e WAS_LINKING_KEY=$NESSUS_KEY --network=host --restart unless-stopped --name='tenable-was' tenable-was:0.1.0 
-  EOT
+    tenable_was_install = <<-EOT
+      #!/bin/bash
+      echo "Configuring Nessus Agent"
+      # get metadata values
+      TOKEN=$(curl -XPUT -s "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+      AVAILABILITY_ZONE=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone -H "X-aws-ec2-metadata-token: $TOKEN")
+      REGION=$(echo $AVAILABILITY_ZONE | sed 's/[a-z]$//')
+      NESSUS_KEY=$(aws ssm get-parameter --region $REGION --name /NESSUS_KEY --with-decryption | jq -r '.Parameter.Value')
+      TENABLE_WAS_NAME=$(aws ssm get-parameter --region $REGION --name /TENABLE_WAS_NAME --with-decryption | jq -r '.Parameter.Value')
+      TENABLE_SCANNER_NAME=$(aws ssm get-parameter --region $REGION --name /TENABLE_SCANNER_NAME --with-decryption | jq -r '.Parameter.Value')
+      echo "Installing Nessus WAS"
+      echo "installing docker"
+      yum install docker -y
+      echo "docker version: " && echo `/usr/bin/docker --version`
+      aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin 026589913916.dkr.ecr-fips.$REGION.amazonaws.com
+      docker pull 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/tenable-was:0.1.0
+      docker tag 026589913916.dkr.ecr-fips.$REGION.amazonaws.com/tenable-was:0.1.0 tenable-was:0.1.0
+      docker run -d -e WAS_SCANNER_NAME=$TENABLE_WAS_NAME -e WAS_LINKING_KEY=$NESSUS_KEY --network=host --restart unless-stopped --name='tenable-was' tenable-was:0.1.0
+    EOT
+  }  
 }
 
 module "kms" {
@@ -158,7 +180,7 @@ module "ec2_instance" {
   instance_type               = var.ec2_instance_type
   key_name                    = module.key_pair.key_pair_name
   subnet_id                   = var.subnet_id
-  user_data_base64            = base64encode(local.user_data)
+  user_data_base64            = base64encode(lookup(local.user_data, var.tenable_install_type, local.user_data.tenable_agent_install))
   user_data_replace_on_change = false
   vpc_security_group_ids      = var.vpc_security_group_ids
 

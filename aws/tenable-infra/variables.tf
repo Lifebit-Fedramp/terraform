@@ -60,3 +60,8 @@ variable "root_block_device_volume_size" {
   default     = 60
   type        = number
 }
+
+variable "tenable_install_type" {
+  description = "Indicates whether the install is an installation for the Nessus Agent, Nessus Linked Scanner or the Nessus wep application scanning"
+  type        = string
+}
