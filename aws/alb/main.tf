@@ -8,9 +8,9 @@ module "alb_sg" {
   use_name_prefix    = var.security_group_use_name_prefix
   description        = format("Security group for ALB %s", var.name)
 
-  ingress_cidr_blocks =  var.ingress_cidrs != [] ? var.ingress_cidrs : ["0.0.0.0/0"]
-  ingress_ipv6_cidrs  = var.ingress_ipv6_cidrs != [] ? var.ingress_ipv6_cidrs : []
-  ingress_rules       = ["http-80-tcp", "https-443-tcp"]
+  ingress_cidr_blocks      = var.ingress_cidrs != [] ? var.ingress_cidrs : ["0.0.0.0/0"]
+  ingress_ipv6_cidr_blocks = var.ingress_ipv6_cidrs != [] ? var.ingress_ipv6_cidrs : []
+  ingress_rules            = ["http-80-tcp", "https-443-tcp"]
 
 #  ingress_with_cidr_blocks = var.ingress_cidrs != [] ? [
 #    {
