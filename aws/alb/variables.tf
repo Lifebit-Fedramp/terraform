@@ -190,8 +190,8 @@ variable "ingress_cidrs" {
   default     = []
 }
 
-variable "ingress_ipv6_cidr_blocks" {
-  description = "List of IPv6 CIDR ranges to use on all ingress rules"
+variable "ingress_ipv6_cidrs" {
+  description = "List of IPv6 CIDR ranges to allow ingress"
   type        = list(string)
   default     = []
 }
