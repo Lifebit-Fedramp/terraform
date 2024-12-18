@@ -28,6 +28,17 @@ module "alb_sg" {
     }
   ]
 
+  ingress_ipv6_cidr_blocks = var.ingress_ipv6_cidr_blocks != [] ? [
+    {
+      rule        = "http-80-tcp"
+      cidr_blocks = join(",", var.ingress_cidrs)
+    },
+    {
+      rule        = "https-443-tcp"
+      cidr_blocks = join(",", var.ingress_cidrs)
+    }
+  ] : []
+
   egress_rules = ["all-all"]
 
   tags = merge(var.tags, {
