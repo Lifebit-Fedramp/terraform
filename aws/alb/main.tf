@@ -8,36 +8,40 @@ module "alb_sg" {
   use_name_prefix    = var.security_group_use_name_prefix
   description        = format("Security group for ALB %s", var.name)
 
-  ingress_with_cidr_blocks = var.ingress_cidrs != [] ? [
-    {
-      rule        = "http-80-tcp"
-      cidr_blocks = join(",", var.ingress_cidrs)
-    },
-    {
-      rule        = "https-443-tcp"
-      cidr_blocks = join(",", var.ingress_cidrs)
-    }
-  ] : [
-    {
-      rule        = "http-80-tcp"
-      cidr_blocks = "0.0.0.0/0"
-    },
-    {
-      rule        = "https-443-tcp"
-      cidr_blocks = "0.0.0.0/0"
-    }
-  ]
+  ingress_cidr_blocks =  var.ingress_cidrs != [] ? var.ingress_cidrs : ["0.0.0.0/0"]
+  ingress_ipv6_cidrs  = var.ingress_ipv6_cidrs != [] ? var.ingress_ipv6_cidrs : []
+  ingress_rules       = ["http-80-tcp", "https-443-tcp"]
 
-  ingress_with_ipv6_cidr_blocks = var.ingress_ipv6_cidrs != [] ? [
-    {
-      rule        = "http-80-tcp"
-      cidr_blocks = join(",", var.ingress_ipv6_cidrs)
-    },
-    {
-      rule        = "https-443-tcp"
-      cidr_blocks = join(",", var.ingress_ipv6_cidrs)
-    }
-  ] : []
+#  ingress_with_cidr_blocks = var.ingress_cidrs != [] ? [
+#    {
+#      rule        = "http-80-tcp"
+#      cidr_blocks = join(",", var.ingress_cidrs)
+#    },
+#    {
+#      rule        = "https-443-tcp"
+#      cidr_blocks = join(",", var.ingress_cidrs)
+#    }
+#  ] : [
+#    {
+#      rule        = "http-80-tcp"
+#      cidr_blocks = "0.0.0.0/0"
+#    },
+#    {
+#      rule        = "https-443-tcp"
+#      cidr_blocks = "0.0.0.0/0"
+#    }
+#  ]
+#
+#  ingress_with_ipv6_cidr_blocks = var.ingress_ipv6_cidrs != [] ? [
+#    {
+#      rule        = "http-80-tcp"
+#      cidr_blocks = join(",", var.ingress_ipv6_cidrs)
+#    },
+#    {
+#      rule        = "https-443-tcp"
+#      cidr_blocks = join(",", var.ingress_ipv6_cidrs)
+#    }
+#  ] : []
 
   egress_rules = ["all-all"]
 
