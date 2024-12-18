@@ -31,11 +31,11 @@ module "alb_sg" {
   ingress_ipv6_cidr_blocks = var.ingress_ipv6_cidr_blocks != [] ? [
     {
       rule        = "http-80-tcp"
-      cidr_blocks = join(",", var.ingress_cidrs)
+      cidr_blocks = join(",", var.ingress_ipv6_cidr_blocks)
     },
     {
       rule        = "https-443-tcp"
-      cidr_blocks = join(",", var.ingress_cidrs)
+      cidr_blocks = join(",", var.ingress_ipv6_cidr_blocks)
     }
   ] : []
 
